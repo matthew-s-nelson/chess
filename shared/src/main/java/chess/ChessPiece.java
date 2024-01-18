@@ -65,7 +65,8 @@ public class ChessPiece {
                 KingMove kingMoving = new KingMove(pieceColor);
                 return kingMoving.kingMoves(board, myPosition);
             case KNIGHT:
-
+                KnightMove knightMoving = new KnightMove(pieceColor);
+                return knightMoving.knightMoves(board, myPosition);
 
 
         }
