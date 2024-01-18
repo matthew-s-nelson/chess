@@ -13,14 +13,16 @@ public class KingMove {
     ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    if (nextPosition.getColumn() < 9 && nextPosition.getRow() < 9 && nextPosition.getColumn() > 0 && nextPosition.getRow() > 0 && board.getPiece(nextPosition) == null) {
-      ChessMove move = new ChessMove(myPosition, new ChessPosition(nextPosition.getRow(), nextPosition.getColumn()), null);
-      validMoves.add(move);
-    } else if (nextPosition.getColumn() < 9 && nextPosition.getRow() < 9 && nextPosition.getColumn() > 0 && nextPosition.getRow() > 0) {
-      ChessPiece blockingPiece = board.getPiece(nextPosition);
+    if (nextPosition.getColumn() < 9 && nextPosition.getRow() < 9 && nextPosition.getColumn() > 0 && nextPosition.getRow() > 0) {
+      if (board.getPiece(nextPosition) == null) {
+        ChessMove move=new ChessMove(myPosition, new ChessPosition(nextPosition.getRow(), nextPosition.getColumn()), null);
+        validMoves.add(move);
+      }else {
+        ChessPiece blockingPiece = board.getPiece(nextPosition);
 
-      if (blockingPiece.getTeamColor() != pieceColor) {
-        validMoves.add(new ChessMove(myPosition, nextPosition, null));
+        if (blockingPiece.getTeamColor() != pieceColor) {
+          validMoves.add(new ChessMove(myPosition, nextPosition, null));
+        }
       }
     }
 
