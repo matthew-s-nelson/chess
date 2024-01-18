@@ -3,9 +3,9 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BishopMove {
+public class RookMove {
   private ChessGame.TeamColor pieceColor;
-  public BishopMove(ChessGame.TeamColor pieceColor) {
+  public RookMove(ChessGame.TeamColor pieceColor) {
     this.pieceColor = pieceColor;
   }
 
@@ -30,13 +30,13 @@ public class BishopMove {
     return validMoves;
   }
 
-  public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+  public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(move(board, myPosition, -1, -1));
-    validMoves.addAll(move(board, myPosition, -1, 1));
-    validMoves.addAll(move(board, myPosition, 1, 1));
-    validMoves.addAll(move(board, myPosition, 1, -1));
+    validMoves.addAll(move(board, myPosition, 1, 0));
+    validMoves.addAll(move(board, myPosition, -1, 0));
+    validMoves.addAll(move(board, myPosition, 0, 1));
+    validMoves.addAll(move(board, myPosition, 0, -1));
 
     return validMoves;
   }

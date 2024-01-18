@@ -53,9 +53,11 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case BISHOP:
-                BishopMove bishopMoving=new BishopMove(pieceColor);
+                BishopMove bishopMoving = new BishopMove(pieceColor);
                 return bishopMoving.bishopMoves(board, myPosition);
-//            case ROOK:
+            case ROOK:
+                RookMove rookMoving = new RookMove(pieceColor);
+                return rookMoving.rookMoves(board, myPosition);
         }
         return new ArrayList<>();
     }
