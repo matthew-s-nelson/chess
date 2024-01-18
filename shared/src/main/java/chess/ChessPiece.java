@@ -58,6 +58,10 @@ public class ChessPiece {
             case ROOK:
                 RookMove rookMoving = new RookMove(pieceColor);
                 return rookMoving.rookMoves(board, myPosition);
+            case QUEEN:
+                QueenMove queenMoving = new QueenMove(pieceColor);
+                return queenMoving.queenMoves(board, myPosition);
+
         }
         return new ArrayList<>();
     }
