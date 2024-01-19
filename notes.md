@@ -89,3 +89,67 @@ char[][] ticTacToeBoard = new char[3][3];
 public static void main(Stirng [] args)
 ```
 arg[0] is the first argument. The filename isn't at index 0.
+## Packages
+A logical grouping of classes. Package name becomes part of the class name.
+### Import
+Provides a shorthand to allow us to refer to a class by just its class name.
+
+# Classes and objects
+Classes have to be in order.
+1. Package statements first
+2. Import statements next (will be a dependency list of the class)
+3. Class
+All code in Java is written in a class. An object is an instance of a class.
+## Object References
+When you create an object, you allocate space for the instance variables.
+The heap is the overall memory space of your computer that is shared by all of your programs.
+The stack is the allocated memory for a specific program.<ul>
+<li>Refer to (allow access to) objects</li>
+<li>Don't allow pointer arithmetic (unlike C++). Don't allow you to accidentally go to the wrong place in memory.</li>
+<li>Creation of a reference doesn't create an object.</li>
+<li>References and objects are closely related but not the same thing.</li>
+<li>Multiple references can refer to the same object.</li></ul>
+References are equal when they point to the same object. Objects are equal when their content (instance variables) are equal.
+
+## Instance vs. Static Variables
+### Instance variables
+<ul>
+<li>Each obj get its own copy of all the instance vars defined in the class</li>
+<li>Most vars should be instance vars</li>
+<li>EX: Allows two dates objs to have different dates</li></ul>
+
+### Static Vars
+<ul>
+<li>Static vars are associated w/ the class not w/ instances</li>
+<li>Use in special cases where you won't create instances of a class or all instances should hsare the same values</li>
+<li>EX: If the var of a date class were static, all dates in a program would represent same date.</li></ul>
+
+## Instance vs. Static methods
+### Instance methods
+<ul>
+<li>Methods are ossociated w/ a specific instnace</li>
+<li>Invoked from a reference that refers to an instance.</li>
+<li>When invoked (on an obj), the vars they access are that obj's instance vars</li></ul>
+
+### Static Methods
+<ul>
+<li>Methods are associated w/ a class (not an instance)</li>
+<li>Invoked by using the class name</li></ul>
+
+## Getters / Setters (Accessors / Mutators)
+<ul>
+<li>Methods for getting and setting instance vars</li>
+<li>Allow you to control access to instance vars. Make vars private and only allow access thru getters and setters.</li>
+<li>Not required to provide getters and setters for all vars.</li>
+<li>Can use your IDE to generate them from var declarations.</li></ul>
+
+## Constructor Methods
+<ul>
+<li>Code executed at obj creation time.</li>
+<li>Must match the class name</li>
+<li>Like a method w/out a return type</li>
+<li>All classes have at least one. Default constructors are written by the compiler if you don't write one.</li>
+<li>Classes can have multiple constructors w/ different parameter types.</li>
+<li>Constructors can invoke each other w/ 'this(...)'. Useful to provide default instance var values when none are provided.</li>
+<li>Constructors invoke parent constructor w/ 'super(...)'</li>
+<li>'this(...)' or 'super(...)' HAS to be the first statement.</li></ul>

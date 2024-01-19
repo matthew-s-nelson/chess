@@ -67,6 +67,9 @@ public class ChessPiece {
             case KNIGHT:
                 KnightMove knightMoving = new KnightMove(pieceColor);
                 return knightMoving.knightMoves(board, myPosition);
+            case PAWN:
+                PawnMove pawnMoving = new PawnMove(pieceColor);
+                return pawnMoving.pawnMoves(board, myPosition);
 
 
         }
@@ -89,5 +92,13 @@ public class ChessPiece {
         int result=pieceColor.hashCode();
         result=31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 }
