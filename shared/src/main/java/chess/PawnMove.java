@@ -39,9 +39,13 @@ public class PawnMove {
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
     if (board.getPiece(nextPosition) == null) {
-      ArrayList<ChessPiece.PieceType> colors = new ArrayList<>(Arrays.asList(ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KING, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK));
-      for
+      ArrayList<ChessPiece.PieceType> colors = new ArrayList<>(Arrays.asList(ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.ROOK));
+      for (ChessPiece.PieceType promotionType : colors) {
+        ChessMove move = new ChessMove(myPosition, nextPosition, promotionType);
+        validMoves.add(move);
+      }
     }
+    return validMoves;
   }
 
   public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
@@ -54,7 +58,9 @@ public class PawnMove {
       validMoves.addAll(moveForward(board, myPosition, -2, 0));
       validMoves.addAll(moveForward(board, myPosition, -1, 0));
     } else if (myPosition.getRow() == 2 && pieceColor == ChessGame.TeamColor.BLACK) {
-//      validMoves.addAll(promote)
+      validMoves.addAll(promote(board, myPosition, -1, 0));
+    } else if (myPosition.getRow() == 7 && pieceColor == ChessGame.TeamColor.WHITE) {
+      validMoves.addAll(promote(board, myPosition, 1, 0));
     }
 
     else if (pieceColor == ChessGame.TeamColor.BLACK) {
