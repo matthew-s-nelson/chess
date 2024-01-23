@@ -5,11 +5,15 @@ import java.util.Collection;
 
 public class BishopMove {
   private ChessGame.TeamColor pieceColor;
-  public BishopMove(ChessGame.TeamColor pieceColor) {
+  private ChessBoard board;
+  private ChessPosition myPosition;
+  public BishopMove(ChessGame.TeamColor pieceColor, ChessBoard board, ChessPosition position) {
     this.pieceColor = pieceColor;
+    this.board = board;
+    this.myPosition = position;
   }
 
-  public Collection<ChessMove> move(ChessBoard board, ChessPosition myPosition, int rowChange, int colChange) {
+  public Collection<ChessMove> move(int rowChange, int colChange) {
     ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
@@ -30,13 +34,13 @@ public class BishopMove {
     return validMoves;
   }
 
-  public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+  public Collection<ChessMove> bishopMoves() {
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(move(board, myPosition, -1, -1));
-    validMoves.addAll(move(board, myPosition, -1, 1));
-    validMoves.addAll(move(board, myPosition, 1, 1));
-    validMoves.addAll(move(board, myPosition, 1, -1));
+    validMoves.addAll(move(-1, -1));
+    validMoves.addAll(move(-1, 1));
+    validMoves.addAll(move(1, 1));
+    validMoves.addAll(move(1, -1));
 
     return validMoves;
   }

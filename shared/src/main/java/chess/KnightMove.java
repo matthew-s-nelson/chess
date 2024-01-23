@@ -5,11 +5,15 @@ import java.util.Collection;
 
 public class KnightMove {
   private ChessGame.TeamColor pieceColor;
-  public KnightMove(ChessGame.TeamColor pieceColor) {
+  private ChessBoard board;
+  private ChessPosition myPosition;
+  public KnightMove(ChessGame.TeamColor pieceColor, ChessBoard board, ChessPosition myPosition) {
     this.pieceColor = pieceColor;
+    this.board = board;
+    this.myPosition = myPosition;
   }
 
-  public Collection<ChessMove> move(ChessBoard board, ChessPosition myPosition, int rowChange, int colChange) {
+  public Collection<ChessMove> move(int rowChange, int colChange) {
     ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
@@ -29,17 +33,17 @@ public class KnightMove {
     return validMoves;
   }
 
-  public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+  public Collection<ChessMove> knightMoves() {
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(move(board, myPosition, 1, 2));
-    validMoves.addAll(move(board, myPosition, 1, -2));
-    validMoves.addAll(move(board, myPosition, 2, 1));
-    validMoves.addAll(move(board, myPosition, 2, -1));
-    validMoves.addAll(move(board, myPosition, -2, -1));
-    validMoves.addAll(move(board, myPosition, -2, 1));
-    validMoves.addAll(move(board, myPosition, -1, 2));
-    validMoves.addAll(move(board, myPosition, -1, -2));
+    validMoves.addAll(move(1, 2));
+    validMoves.addAll(move(1, -2));
+    validMoves.addAll(move(2, 1));
+    validMoves.addAll(move(2, -1));
+    validMoves.addAll(move(-2, -1));
+    validMoves.addAll(move(-2, 1));
+    validMoves.addAll(move(-1, 2));
+    validMoves.addAll(move(-1, -2));
 
     return validMoves;
   }

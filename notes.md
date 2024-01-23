@@ -153,3 +153,70 @@ References are equal when they point to the same object. Objects are equal when 
 <li>Constructors can invoke each other w/ 'this(...)'. Useful to provide default instance var values when none are provided.</li>
 <li>Constructors invoke parent constructor w/ 'super(...)'</li>
 <li>'this(...)' or 'super(...)' HAS to be the first statement.</li></ul>
+
+# Java Records
+Boiler plate code: obvious what the code is/should be, but it has to be written <br>
+Easier way to write a class that has getters, setters, equals, toString and hashCode methods.
+```java
+public record Pet(int id, String name, String type) {}
+```
+## Features
+<ul>
+<li>Immutability (all fields are final)</li>
+<li>Simplified constructor syntax</li>
+<li>Automatic getters (access by using field name w/out get (p.name();)</li>
+<li>Automatic equals that compares all the fields.</li>
+<li>Automatic toString that represents all the fields.</li></ul>
+
+Can add other methods to it.
+```java
+public record Pet(int id, String name, String type){
+  Pet rename(String newName) {
+    return new Pet(id, newName, type);
+  }
+}
+```
+
+# Exceptions
+Abnormal conditions that can occur in a Java class.<br>
+Errors are things that your program can't fix (such as your computer running out of RAM)
+## Exceptions
+Things that could be fixed by the program<br>
+RuntimeExceptions are your fault (bugs in the code).<br>
+Checked exceptions would be reasonable for your to address within your code (exception handling).
+## Try/Catch Block
+Syntax:
+```java
+try{
+  //Code that may throw an exception
+} catch (SomeExceptionType ex) {
+  //Code to handle the exception
+} catch (OtherExceptionType ex) {
+  //Code to handle the exception
+}
+```
+Can catch multiple exceptions at once that will execut same code:
+```java
+try{
+  //Code that may throw an exception
+} catch (SomeExceptionType | OtherExceptionType ex) {
+  //Code to handle the exception
+}
+```
+### Checked Exceptions
+Have to write a catch block or explicitly say that you aren't writing it.
+(Handle or Declare Rule)<br>
+Ex of declare:
+```java
+public void method throws Exception{}
+```
+
+## Finally Blocks
+Always executed no matter what.
+```java
+try {
+  
+} catch {
+  
+} finally{}
+```

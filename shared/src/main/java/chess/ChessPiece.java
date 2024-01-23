@@ -53,23 +53,23 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case BISHOP:
-                BishopMove bishopMoving = new BishopMove(pieceColor);
-                return bishopMoving.bishopMoves(board, myPosition);
+                BishopMove bishopMoving = new BishopMove(pieceColor, board, myPosition);
+                return bishopMoving.bishopMoves();
             case ROOK:
-                RookMove rookMoving = new RookMove(pieceColor);
-                return rookMoving.rookMoves(board, myPosition);
+                RookMove rookMoving = new RookMove(pieceColor, board, myPosition);
+                return rookMoving.rookMoves();
             case QUEEN:
-                QueenMove queenMoving = new QueenMove(pieceColor);
-                return queenMoving.queenMoves(board, myPosition);
+                QueenMove queenMoving = new QueenMove(pieceColor, board, myPosition);
+                return queenMoving.queenMoves();
             case KING:
-                KingMove kingMoving = new KingMove(pieceColor);
-                return kingMoving.kingMoves(board, myPosition);
+                KingMove kingMoving = new KingMove(pieceColor, board, myPosition);
+                return kingMoving.kingMoves();
             case KNIGHT:
-                KnightMove knightMoving = new KnightMove(pieceColor);
-                return knightMoving.knightMoves(board, myPosition);
+                KnightMove knightMoving = new KnightMove(pieceColor, board, myPosition);
+                return knightMoving.knightMoves();
             case PAWN:
-                PawnMove pawnMoving = new PawnMove(pieceColor);
-                return pawnMoving.pawnMoves(board, myPosition);
+                PawnMove pawnMoving = new PawnMove(pieceColor, board, myPosition);
+                return pawnMoving.pawnMoves();
 
 
         }
