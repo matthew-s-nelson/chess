@@ -220,3 +220,141 @@ try {
   
 } finally{}
 ```
+
+## Try with Resources
+Opens the file for the try block. Automatically closes the file when you leave the try block.
+Allows you to see the original exception that happens rather than the exception from trying to close the file.
+```java
+try(FileReader fr = new FileReader (file)){
+  // Code
+}
+```
+## Throw an Exception
+```java
+if (methodParam < 0) {
+  throw new IllegalArgumentException("The parameter cannot be negative");
+}
+```
+## Rethrowing an Exception
+```java
+try {
+} catch (RuntimeException ex) {
+  throw ex;
+} catch (Exception ex){}
+```
+## Overridden Method Exception Rule
+<ul>
+<li>Overriding methods can't throw checked exceptions that aren't expected by callers of the overridden method.</li>
+<li>Overriding methods can throw</li>
+<ul><li>Fewer exceptions than the overridden method.</li>
+<li>The same exceptions</li>
+<li>Subclasses of exceptions thrown by the overridden method</li>
+<li>RuntimeExceptions and errors</li></ul>
+<li>
+Can't throw anything else</li></ul>
+
+## Create own exception classes
+```java
+public class ImageEditorException extends Exception{
+  public ImageEditorException(){}
+  public ImageEditorException(String message){
+    super(message);
+  }
+  public ImageEditorException(String message, Throwable cause){
+    super(message, cause);
+  }
+  public ImageEditorException(Throwable cause){
+    super(cause);
+  }
+}
+```
+
+# Java Collections
+## List
+<ul>
+<li>A sequence of elements accessed by index. get(index), set(index, value)</li>
+<li>ArrayList(resizable array implementation</li>
+<li>LinkedList(doubly-linked list implementation</li></ul>
+
+## Set
+<ul>
+<li>A collection that contains no duplicates. add(value), contains(value), remove(value)</li>
+<li>HashSeet (hash table implementation)</li>
+<li>TreeSet (bst implementation)</li>
+<li>LinkedHashSet (hash table + linked list implementation)</li></ul>
+
+## Queue
+<ul>
+<li>A collection designed for holding elements prior to processing</li>
+<li>ArrayDeque (fifo, resizable array implementation)</li>
+<li>LinkedList (fifo, linkedlist implementation)</li>
+<li>PriorityQueue (priority queue, binary heap implementation</li></ul>
+
+## Deque
+<ul>
+<li>A queue that supports efficient insertion and removal at both ends</li>
+<li>Use a deque instead of a stack.</li>
+<li>ArrayDeque</li>
+<li>LinkedList</li></ul>
+
+## Map
+<ul>
+<li>A collection that maps keys to values</li>
+<li>HashMap (hash table implementation)</li>
+<li>TreeMap (bst implementation)</li>
+<li>LinkedHashMap (hash table + linked list implementation)</li></ul>
+
+## Iterable Interface
+<ul>
+<li>All collections (but not maps) implement the iterable interface</li>
+<li>This allows them to work with Java's "for each" loop.</li>
+</ul>
+
+```java
+Set <String> words;
+for (String w: words) {...}
+```
+
+## Hashing-Based Collections
+RULE: if equals is based on identity, so should hashCode. If it's based on value, so should hashCode. Equals and HashCode should use the same fields in their equality and hashCode equalities.<br>
+Can't change info in objects that are used as keys in data structures (must remove and re-insert).
+## Sorted Collections
+Use a comparable method to decide how you want things to be compared when they are sorted.<br>
+-1 means it goes after. 0 means they're equal. 1 means it goes first.
+# Copying Objects
+You can either do a shallow copy or a deep copy.<br>
+Shallow copy - Copy the variable values from the original object to the copy. Any change to the copy changes the original.<br>
+Deep copy - Copy the object and all the objects it references (a change doesn't change the original)<br><br>
+You do not need to do a deep copy of an immutable object (e.g. string, boolean, etc.)<br>
+Built in clone method is the best way to do this.
+## Cloning
+Gives a shallow copy:
+```java
+public class Person implements Cloneable{
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
+}
+```
+
+Have to copy each mutable variable to get a deep copy:
+```java
+import java.util.ArrayList;
+
+public class Person implements Cloneable {
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    Team clone=(Team) super.clone();
+
+    List<Person> cloneMembers=new ArrayList<>();
+    for (Person person : members) {
+      Person personClone = (Person) person.clone();
+      cloneMembers.add(personClone);
+    }
+    clone.members = cloneMembers;
+    
+    return super.clone();
+  }
+}
+```
