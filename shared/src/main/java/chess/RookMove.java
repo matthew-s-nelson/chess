@@ -4,43 +4,38 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class RookMove {
-  private ChessGame.TeamColor pieceColor;
   private ChessBoard board;
   private ChessPosition myPosition;
-  public RookMove(ChessGame.TeamColor pieceColor, ChessBoard board, ChessPosition myPosition) {
-    this.pieceColor = pieceColor;
+  private ChessGame.TeamColor pieceColor;
+
+  public RookMove(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor){
     this.board = board;
     this.myPosition = myPosition;
+    this.pieceColor = pieceColor;
   }
 
-  public Collection<ChessMove> move(int rowChange, int colChange) {
-    ChessPosition nextPosition = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
+  public Collection<ChessMove> findMoves(int rowChange, int colChange){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
+    ChessPosition newPos = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
 
-    while (nextPosition.getColumn() < 9 && nextPosition.getRow() < 9 && nextPosition.getColumn() > 0 && nextPosition.getRow() > 0 && board.getPiece(nextPosition) == null) {
-      ChessMove move = new ChessMove(myPosition, new ChessPosition(nextPosition.getRow(), nextPosition.getColumn()), null);
-      validMoves.add(move);
-      nextPosition.updatePosition(nextPosition.getRow() + rowChange, nextPosition.getColumn() + colChange);
+    while(newPos.inBounds() && board.getPiece(newPos) == null){
+      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
+      newPos.updatePos(rowChange, colChange);
     }
 
-    if (nextPosition.getColumn() < 9 && nextPosition.getRow() < 9 && nextPosition.getColumn() > 0 && nextPosition.getRow() > 0) {
-      ChessPiece blockingPiece = board.getPiece(nextPosition);
-
-      if (blockingPiece.getTeamColor() != pieceColor) {
-        validMoves.add(new ChessMove(myPosition, nextPosition, null));
-      }
+    if(newPos.inBounds() && board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != pieceColor){
+      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
     }
-
     return validMoves;
   }
 
-  public Collection<ChessMove> rookMoves() {
+  public Collection<ChessMove> move(){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(move(1, 0));
-    validMoves.addAll(move(-1, 0));
-    validMoves.addAll(move(0, 1));
-    validMoves.addAll(move(0, -1));
+    validMoves.addAll(findMoves(0, 1));
+    validMoves.addAll(findMoves(0, -1));
+    validMoves.addAll(findMoves(1, 0));
+    validMoves.addAll(findMoves(-1, 0));
 
     return validMoves;
   }

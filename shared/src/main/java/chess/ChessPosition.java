@@ -10,15 +10,9 @@ public class ChessPosition {
 
     private int row;
     private int col;
-
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
-    }
-
-    public void updatePosition(int newRow, int newCol) {
-        this.row = newRow;
-        this.col = newCol;
     }
 
     /**
@@ -35,6 +29,19 @@ public class ChessPosition {
      */
     public int getColumn() {
         return col;
+    }
+
+    public boolean inBounds(){
+        return (row < 9 && row > 0 && col < 9 && col > 0);
+    }
+
+    public ChessPosition copy(){
+        return new ChessPosition(row, col);
+    }
+
+    public void updatePos(int rowChange, int colChange){
+        row = row + rowChange;
+        col = col + colChange;
     }
 
     @Override

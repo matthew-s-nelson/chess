@@ -10,8 +10,10 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+
     private ChessGame.TeamColor pieceColor;
     private ChessPiece.PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -51,29 +53,36 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        switch (type) {
+        switch (type){
             case BISHOP:
-                BishopMove bishopMoving = new BishopMove(pieceColor, board, myPosition);
-                return bishopMoving.bishopMoves();
-            case ROOK:
-                RookMove rookMoving = new RookMove(pieceColor, board, myPosition);
-                return rookMoving.rookMoves();
-            case QUEEN:
-                QueenMove queenMoving = new QueenMove(pieceColor, board, myPosition);
-                return queenMoving.queenMoves();
+                BishopMove bishopMoving = new BishopMove(board, myPosition, pieceColor);
+                return bishopMoving.move();
             case KING:
-                KingMove kingMoving = new KingMove(pieceColor, board, myPosition);
-                return kingMoving.kingMoves();
+                KingMove kingMoving = new KingMove(board, myPosition, pieceColor);
+                return kingMoving.move();
             case KNIGHT:
-                KnightMove knightMoving = new KnightMove(pieceColor, board, myPosition);
-                return knightMoving.knightMoves();
+                KnightMove knightMoving = new KnightMove(board, myPosition, pieceColor);
+                return knightMoving.move();
+            case QUEEN:
+                QueenMove queenMoving = new QueenMove(board, myPosition, pieceColor);
+                return queenMoving.move();
+            case ROOK:
+                RookMove rookMoving = new RookMove(board, myPosition, pieceColor);
+                return rookMoving.move();
             case PAWN:
-                PawnMove pawnMoving = new PawnMove(pieceColor, board, myPosition);
-                return pawnMoving.pawnMoves();
-
-
+                PawnMove pawnMoving = new PawnMove(board, myPosition, pieceColor);
+                return pawnMoving.move();
         }
+
         return new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 
     @Override
@@ -92,13 +101,5 @@ public class ChessPiece {
         int result=pieceColor.hashCode();
         result=31 * result + type.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ChessPiece{" +
-                "pieceColor=" + pieceColor +
-                ", type=" + type +
-                '}';
     }
 }
