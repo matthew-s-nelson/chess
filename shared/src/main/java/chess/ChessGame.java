@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -48,7 +49,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        return piece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -70,7 +72,23 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        ChessPosition kingPosition = board.findKing(teamColor);
+
+        for (int row = 1; row < 9; row++){
+            for (int col = 1; col < 9; col++){
+                ChessPosition position = new ChessPosition(row, col);
+                if (board.getPiece(position) != null && board.getPiece(position).getTeamColor() != teamColor){
+                    Collection<ChessMove> movesToCheck = validMoves(position);
+                    for (ChessMove move: movesToCheck){
+                        if (move.getEndPosition().equals(kingPosition)){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -80,7 +98,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return false;
     }
 
     /**

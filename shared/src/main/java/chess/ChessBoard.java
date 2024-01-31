@@ -35,6 +35,23 @@ public class ChessBoard {
     }
 
     /**
+     * Returns the position of a King of a certain color
+     *
+     * @param color of the team to find the King of
+     */
+    public ChessPosition findKing(ChessGame.TeamColor color) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                if (this.getPiece(pos) != null && getPiece(pos).getPieceType() == ChessPiece.PieceType.KING && getPiece(pos).getTeamColor() == color) {
+                    return pos;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Gets a chess piece on the chessboard
      *
      * @param position The position to get the piece from
@@ -42,7 +59,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow()-1][position.getColumn()-1];
+        return board[position.getRow() - 1][position.getColumn() - 1];
     }
 
 

@@ -358,3 +358,49 @@ public class Person implements Cloneable {
   }
 }
 ```
+# Inner classes
+<ul>
+<li>Static Inner classes (public static ClassName): doesn't have any special access to the class it's contained in.</li>
+<li>Inner Class (public ClassName): Has access to the instance variables and methods of the class it's contained in.</li>
+<li>Local Inner Class: Class that is contained inside a method of the outer class. Can access the local variables of the method it's contained in. Can only use variables that are final or effectively final (won't be changed).</li>
+<li>Anonymous Class: A method in the containing class returns an iterator class that is defined in the return statement.</li></ul>
+
+Valid moves is limited. Can't make a move that puts you in check. If you're in check, your move has to get you out of check.
+Maybe make a method that finds all the moves a team can make. Then, you can check if one will get your king, get you out of check, etc.
+Check to see if you're in check, take all the moves, and try them one at a time to see if you're in check. If there aren't any, then you are in check mate.
+Could clone the board for every move and call is in check for that move.
+Could make a move, check is in check and then undo the move.
+
+Castling Condition 4:
+It would be the equivalent to the king not being in check in the original, the moving spot and the final spot. That would mean that the Rook would end up safe.
+
+# Software Design Principles
+## Intro
+<ul><li>Create systems that work</li>
+<li>Easy to understand, debug and maintain</li>
+<li>Hold up well under changes</li>
+<li>Have reusable components</li></ul>
+
+## Design is Inherently Iterative
+<ul><li>Design, implement, test, design, implement, test, ...</li>
+<li>Feedback loop from implementation back into design provides valuable knowledge</li>
+<li>Designing everything before beginning implementation doesn't work</li>
+<li>Beginning implementation without doing any design also doesn't work</li>
+<li>The appropriate balance is achieved by interleaving design and implementation activities in relatively short iterations.</li></ul>
+
+## Abstraction
+<ul><li>Abstraction is 1 of software designer's primary tools for coping w/ complexity</li>
+<li>Programming languages and OSes provide abstractions that model the underlying machine</li>
+<li>Software designers must create higher-level abstraction to make it easier to understand.</li>
+<li>Each abstraction is represented as a class in Java</li>
+<li>Each class has carefully designed public interface that defines how the rest of the system interacts w/ it.</li>
+<li>A client can invoke operations on an obj w/out understanding how it internally works.</li></ul>
+
+## Naming
+<ul><li>Class, method and var names should clearly convey their function or purpose</li></ul>
+
+## Single Responsibility/Cohesion
+<ul><li>Each abstraction should have a single responsibility</li>
+<li>Each class should represent 1, well-defined concept</li>
+<li>Each method should perfom one, well defined task</li>
+<li>Cohesive classes and methods should be easy to name. (if they aren't, maybe it should be split up).</li></ul>
