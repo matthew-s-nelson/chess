@@ -98,7 +98,36 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return false;
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                if (board.getPiece(position) != null && board.getPiece(position).getTeamColor() == teamColor) {
+                    Collection<ChessMove> movesToCheck = validMoves(position);
+                    for (ChessMove move : movesToCheck) {
+                        try {
+                            this.makeMove(move);
+                        } catch (InvalidMoveException e) {
+                            e.printStackTrace();
+                        }
+                        if (!isInCheck(teamColor)) {
+                            try {
+                                this.makeMove(new ChessMove(move.getEndPosition(), move.getStartPosition(), null));
+                            } catch (InvalidMoveException e) {
+                                e.printStackTrace();
+                            }
+                            return false;
+                        }
+                        try{
+                            this.makeMove(new ChessMove(move.getEndPosition(), move.getStartPosition(), null));
+                        } catch (InvalidMoveException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
