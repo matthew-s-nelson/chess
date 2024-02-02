@@ -404,3 +404,43 @@ It would be the equivalent to the king not being in check in the original, the m
 <li>Each class should represent 1, well-defined concept</li>
 <li>Each method should perfom one, well defined task</li>
 <li>Cohesive classes and methods should be easy to name. (if they aren't, maybe it should be split up).</li></ul>
+
+## Decomposition
+<ul><li>Large problems subdivided into smaller sub-problems</li>
+<li>Subdivision continues until leaf-level problems are simple enough to solve directly</li>
+<li>Solutions to sub-problems are recombined into solutions to larger problems.</li>
+<li>Helps us to discover the abstractions that we need</li></ul>
+
+## Good Algorithm and Data Structure Selection
+<ul><li>No amount of decomposition or abstraction will hide a fundamentally flawed selection of algorithm or data structure.</li>
+</ul>
+
+## Information Hiding
+<ul><li>Many languages provide "public", "private" and protected" access levels</li>
+<li>All internal implementation is "private" unless there's a good reason to make it "protected" or "public"</li>
+<li>A class' public interface should be as simple as possible.</li>
+<li>Don't let internal details "leak out" of a class. e.g. call a class ClassRoll instead of StudentLinkedList which specifies how it was implemented.</li>
+<li>Maintain a strict separation between a class' interace and its implementation</li>
+<li>Program to interfaces instead of concrete classes. (Say that a method returns a Collection rather than a linked list so that you can change the implementation after.)</li></ul>
+
+## Code Duplication
+DRY principle: Don't repeat yourself. If you repeat yourself, anytime you repeat code, you have to make fixes in multiple places.
+
+# Streams and Files
+## Ways to Read/Write Files
+Streams - Read or write a file (or other source or destination of bytes) sequentially<br>
+Scanner Class = Tokenize stream input (read one token at a time)<br>
+Files Class - Read, copy, etc. whole files<br>
+RandomAccessFile Class - Use a file pointer to read from/write to any location in a file.
+
+### The File Class
+Used to represent, create, or delete a file but not read one.
+### Java I/O Streams (overview)
+<ul><li>Writing data to/reading data from files</li>
+<li>2 Choices: Binary-formatted or text-formatted data</li>
+<li>InputStream and OutputStream (read/write bytes and binary-formatted data</li>
+<li>Reader and Writer - reading/writing characters and text-formatted data</li></ul>
+
+### Scanner class
+<ul><li>Can read "tokens" one at a time from a source of characters</li>
+<li>Read from a File, InputStream, </li></ul>
