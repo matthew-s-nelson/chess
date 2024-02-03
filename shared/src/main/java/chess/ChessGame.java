@@ -50,7 +50,16 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        return piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+        for (ChessMove move: possibleMoves) {
+            board.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
+            if (!isInCheck(piece.getTeamColor())) {
+                validMoves.add(move);
+            }
+            board.movePiece(move.getEndPosition(), move.getStartPosition(), piece);
+        }
+        return validMoves;
     }
 
     /**
@@ -60,9 +69,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPiece piece = board.getPiece(move.getStartPosition());
-        board.removePiece(move.getStartPosition());
-        board.addPiece(move.getEndPosition(), piece);
+        ChessPiece piece=board.getPiece(move.getStartPosition());
+        if (piece.getTeamColor() == turn) {
+            Collection<ChessMove> valid = validMoves(move.getStartPosition());
+            if (valid.contains(move)) {
+                board.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
+            } else {
+                throw new InvalidMoveException("Move not valid.");
+            }
+        } else {
+            throw new InvalidMoveException("Not your turn.");
+        }
+
     }
 
     /**
@@ -75,13 +93,13 @@ public class ChessGame {
 
         ChessPosition kingPosition = board.findKing(teamColor);
 
-        for (int row = 1; row < 9; row++){
-            for (int col = 1; col < 9; col++){
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
                 ChessPosition position = new ChessPosition(row, col);
-                if (board.getPiece(position) != null && board.getPiece(position).getTeamColor() != teamColor){
-                    Collection<ChessMove> movesToCheck = validMoves(position);
-                    for (ChessMove move: movesToCheck){
-                        if (move.getEndPosition().equals(kingPosition)){
+                if (board.getPiece(position) != null && board.getPiece(position).getTeamColor() != teamColor) {
+                    Collection<ChessMove> movesToCheck = board.getPiece(position).pieceMoves(board, position);
+                    for (ChessMove move: movesToCheck) {
+                        if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
                     }
@@ -104,25 +122,13 @@ public class ChessGame {
                 if (board.getPiece(position) != null && board.getPiece(position).getTeamColor() == teamColor) {
                     Collection<ChessMove> movesToCheck = validMoves(position);
                     for (ChessMove move : movesToCheck) {
-                        try {
-                            this.makeMove(move);
-                        } catch (InvalidMoveException e) {
-                            e.printStackTrace();
-                        }
+                        ChessPiece piece = board.getPiece(move.getStartPosition());
+                        board.movePiece(move.getStartPosition(), move.getEndPosition(), piece);
                         if (!isInCheck(teamColor)) {
-                            try {
-                                this.makeMove(new ChessMove(move.getEndPosition(), move.getStartPosition(), null));
-                            } catch (InvalidMoveException e) {
-                                e.printStackTrace();
-                            }
+                            board.movePiece(move.getEndPosition(), move.getStartPosition(), piece);
                             return false;
                         }
-                        try{
-                            this.makeMove(new ChessMove(move.getEndPosition(), move.getStartPosition(), null));
-                        } catch (InvalidMoveException e) {
-                            e.printStackTrace();
-                        }
-
+                        board.movePiece(move.getEndPosition(), move.getStartPosition(), piece);
                     }
                 }
             }

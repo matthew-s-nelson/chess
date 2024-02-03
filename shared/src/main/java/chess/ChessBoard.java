@@ -51,6 +51,11 @@ public class ChessBoard {
         return null;
     }
 
+    public void movePiece (ChessPosition startPosition, ChessPosition endPosition, ChessPiece piece) {
+        this.removePiece(startPosition);
+        this.addPiece(endPosition, piece);
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
