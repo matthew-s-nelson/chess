@@ -444,3 +444,82 @@ Used to represent, create, or delete a file but not read one.
 ### Scanner class
 <ul><li>Can read "tokens" one at a time from a source of characters</li>
 <li>Read from a File, InputStream, </li></ul>
+
+# JSON
+## Structure of JSON documents
+<ul><li>Objects deliminted by {...} with comma -separated properites in between</li>
+<li>Array's delimited by [...] with comma-separated elements in between</li>
+</ul>
+
+## Parsing JSON Data
+### DOM Parsers
+<ul><li>Convert JSON text to an in-memory tree data structure.</li><li>After running the parser to create a DOM, traverse the DOM to extract the data you want</li></ul>
+
+### Stream Parsers
+Tokenizers that return one token at a time from the JSON data file. More efficient memory usage because it doesn't use the whole file.
+
+### Serializer/Deserializers (best way)
+<ul><li>Use a library to convert from JSON to Java Objs and vice versa</li>
+<li>Gson and Jackson are both popular libraries.</li></ul>
+
+# Chess Server Design
+A Server is a program that can accept requests from some other program.<br>
+Has a Web API which is a set of urls with accept some json and return a json<br>
+Serves the web application to the browser.
+## Design
+<ul><li>Single Responsibility principle (SRP)</li>
+<li>Avoid Code duplication</li>
+<li>Information hiding</li></ul>
+
+# HTTP Overview
+## Client connects to Server
+- Client establishes a network connection w/ the server.
+- A connection allows the client to send bites to the server and vice versa.
+- Have to have IP addresses for both client and server machine to connect.
+- Normally IP addresses are specified by using a domain name
+- The client uses the "domain name service" (DNS) to conver the server's domain name to an IP address
+- Each server communicates on a particular port (an unsigned integer in the range 1-65535)
+- Client must know both server program's IP and port number to connect
+## HTTP GET
+Request:
+- Protocol://domain name:Port Number/Path (URL)
+- GET urlPath HTTP Version
+  - Headers go under the GET method
+Response:
+- HTTP Vversion  Status Code  Reason Phrase
+  - Headers go under followed by an empty line
+  - Response body
+- Status codes:
+  - 200-299 = request was handled correctly
+  - 300-399 = Redirect
+  - 400-499 = Errors
+  - 500-599 = Server messed up
+
+## HTTP Post
+- Post  urlPath  HTTP Version
+  - Headers followed by empty line
+  - Request Body (data sent in)
+Response looks the same but the Response body has a JSON string.
+
+## Other Methods
+- Put
+  - An update operation in a REST API
+  - Body included in request
+- Delete
+  - Delete the specified resource
+  - A delete operation in a REST API
+  - Body should normally not be included in request
+- Others: head, options, trace, patch
+
+# cURL
+- Easy experimentation w/ HTTP endpoints
+- Available everywhere
+## Commands
+- -x : HTTP method (GET is default) (-X POST)
+- -v : verbose
+- -d : body data (ed '{"name":"joe"})
+- -H : Provide an HTTP header
+- -o : Output response to a file
+- --data-binary : Body data from file
+- -D : Dump headers to the given file 
+
