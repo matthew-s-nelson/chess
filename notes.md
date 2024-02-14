@@ -523,3 +523,68 @@ Response looks the same but the Response body has a JSON string.
 - --data-binary : Body data from file
 - -D : Dump headers to the given file 
 
+# Spark Java
+Default Spark port: 4567
+A simple spark server:
+```java
+import spark.Spark;
+
+public class SimpleHelloBYUServer {
+  public static void main(String[] args) {
+    Spark.get("/hello", (req,res) -> "Hello BYU!");
+  }
+}
+```
+## Specifying the Port from the command line
+```java
+int port = Integer.parseInt(args[0]);
+Spart.port(port);
+
+Spark.awaitInitialization();
+```
+## Spark Routes
+Routes are matched in the order they are defined. The first route that matches the request is invoked.
+### Useful Request and Response Methods
+Request
+- body() - retrieve the request body
+- headers() - retrieve all headers (as a set of strings)
+- header("...") - retrieve the specified header
+
+Response
+- body("...") - set the response body (i.e. "Hello" sets the response body to "Hello")
+- status(404) - sets the status code to 404 (not found)
+
+### Serving static files
+- Access w/ a url that doesn't include /public
+- Spark expects the file(s) to be place in a subdirectory of some directory that is available on the classpath (i.e./public goes in a directory on the classpath)
+- A file named index.html will be served from the base url
+- src/main/java directory is the sources root (code)
+- src/main/resources is the resources root (image, files, etc.)
+### Overriding the Default Not Found Page
+Add in the HTML that you want shown if there is a 404 error.
+```java
+Spark.notFound("<html><body>My custon 404 page</body></html>");
+```
+
+## Filters
+- Provide a way to execute common code for multiple routes w/out code duplication
+```java
+before((request, response) -> {
+  boolena authenticated;
+//   check if authenticated
+        Code if they are or aren't authenticated'
+        })
+
+```
+- Filters take an optional pattern to restrict the routes to which they are applied
+- There's also after filters
+- You can have multiple before and/or after filters, which are executed in the order in which they appear.
+
+## Installation
+3 ways:
+1. Add the dependency from File/Project structure
+   - Search for com.sparkjava and select the latest version (don't select Apache Spark)
+2. Create a Maven project and add the dependency to your pom.xml file
+3. Create a Gradle project and add the dependency to your build.gradle file
+
+# Tips for Phase 3
