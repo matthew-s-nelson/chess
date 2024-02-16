@@ -587,4 +587,56 @@ before((request, response) -> {
 2. Create a Maven project and add the dependency to your pom.xml file
 3. Create a Gradle project and add the dependency to your build.gradle file
 
-# Tips for Phase 3
+# Writing Quality Code
+## Methods
+### Strong Cohesion
+- Just like classes, methods should be highly cohesive.
+- A cohesive method does one and only one thing, and has a name that describes effectively what it does
+- Methods that do too much become obvious if we name them properly
+### Good method names
+- Name should be a verb or verb phrase if it doesn't return anything
+- Name could be a name if it returns something, or it says what it returns
+- Make method names long enough to be easily understood (don't abbreviate too much)
+- Establish conventions for naming methods (e.g. boolean functions isReady, isLeapYear, etc.)
+### REasons for creating methods
+- Classes are abstractions that represent "things" in a system
+- Methods are abstractions that represent the "algoritms" in a system
+#### Top-down decomposition of algorithms
+- Long or complex methods can be simplified by factoring out meaningful sections of code into well-named sub-methods
+- The original becomes the "driver" method
+- Avoid code duplication
+- Avoid deep nesting
+### Avoid Code Duplication
+- Write methods for code that you would otherwise be repeating
+### Deep nesting
+- Excessive nesting of statements is one of the chief culprits of confusing code
+- You should avoid nesting more than 3 or levels (of if statements or loop)
+- Creating additional sub-methods is the best way to remove deep nesting
+### Parameters
+- Use all parameters
+- The more parameters it has, the harder to uunderstand
+- Try not to go more than 7
+- Order parameters as follows: in, in-out, out
+## Guidelines for initializing Data
+- Initialize variables when they're declared
+- Declare variables close to where they're used
+## Code Layout
+- Pick a style and consistently use it
+## Whitespace
+- Organize methods into "paragraphs"
+- Use indentation to show logical structure
+## Expressions
+- Use parenthesize to made your expressions easier to understand
+- Use spaces between operands, operators, and parentheses.
+## Pseudo Code
+- When writing an algorithmically complex method, write an outline of the method before starting to code
+- Use English-like statements to describe the steps in teh algorithm
+- Avoid syntatic elements from the target programming language
+- Write pseudo-code at the level of intent (what rather than how)
+- Write pseudo-code at a low enough level that generating the code should be fairly simple.
+## Naming conventions
+- Separating words in identifiers (camel-case or separate words w/ underscores)
+- First char of class name is upper-case
+- First char of method name is lower case
+- First char of var name is lower case
+- Constant names are usually separated by underscores
