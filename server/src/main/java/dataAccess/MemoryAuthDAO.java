@@ -8,15 +8,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO{
-  Collection<AuthData> authData;
+  private Collection<AuthData> authData;
   public MemoryAuthDAO() {
     authData = new HashSet<>();
   }
   @Override
-  public String createAuth(String username) {
+  public AuthData createAuth(String username) {
     String authToken = UUID.randomUUID().toString();
-    authData.add(new AuthData(authToken, username));
-    return authToken;
+    AuthData newAuth = new AuthData(authToken, username);
+    authData.add(newAuth);
+    return newAuth;
   }
 
   @Override

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class MemoryGameDAO implements GameDAO {
-  Collection<GameData> gameData;
+  private Collection<GameData> gameData;
 
   public MemoryGameDAO() {
     gameData = new HashSet<>();
