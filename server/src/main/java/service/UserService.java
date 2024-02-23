@@ -8,9 +8,9 @@ public class UserService {
   private UserDAO userDAO;
   private AuthDAO authDAO;
 
-  public UserService() {
-    userDAO = new MemoryUserDAO();
-    authDAO = new MemoryAuthDAO();
+  public UserService(UserDAO userDAO, AuthDAO authDAO) {
+    this.userDAO = userDAO;
+    this.authDAO = authDAO;
   }
   public AuthData register(UserData user) {
     if (userDAO.userExists(user.username())) {
