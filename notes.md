@@ -640,3 +640,19 @@ before((request, response) -> {
 - First char of method name is lower case
 - First char of var name is lower case
 - Constant names are usually separated by underscores
+
+# Unit Testing
+Three important types of software testing:
+1. Unit testing (test units in isolation)
+2. Integration Testing (test integrated units)
+3. System Testing (test entire system that is fully integrated)
+
+## What do they do?
+- Create objects, call methods, and verify that the returned results are correct
+- Actual results vs expected results
+- Should be automated so they can be run frequently to ensure that changes, additions, bug fixes, etc. have not broken the code
+- Notifies you when changes have introduced bugs, and helps to avoid destabilizing the system.
+## Test Driver Program
+- runts all the tests
+- Must be easy to add new tests to
+- Tells you that everything worked, or gives you a list of failed tests
