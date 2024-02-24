@@ -15,7 +15,7 @@ public class MemoryAuthDAO implements AuthDAO{
   @Override
   public AuthData createAuth(String username) {
     String authToken = UUID.randomUUID().toString();
-    AuthData newAuth = new AuthData(authToken, username);
+    AuthData newAuth = new AuthData(username, authToken);
     authData.add(newAuth);
     return newAuth;
   }
@@ -35,9 +35,10 @@ public class MemoryAuthDAO implements AuthDAO{
     for (AuthData auth: authData) {
       if (Objects.equals(auth.authToken(), authToken)) {
         authData.remove(auth);
+        return;
       }
     }
-    throw new DataAccessException("AuthToken does not exist.");
+    throw new DataAccessException("AuthToken doesn't exist.");
   }
 
   @Override

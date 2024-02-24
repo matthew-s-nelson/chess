@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.*;
+import model.AuthData;
 import model.UserData;
 import service.ClearService;
 import service.UserService;
@@ -24,6 +25,7 @@ public class Server {
 
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clearDB);
 
         Spark.awaitInitialization();
@@ -45,6 +47,15 @@ public class Server {
         var user = new Gson().fromJson(req.body(), UserData.class);
         var auth = userService.login(user);
         return new Gson().toJson(auth);
+    }
+
+    //Not working
+    private Object logout(Request req, Response res) {
+        var authToken = req.headers("authorization");
+        AuthData authData = new AuthData("", authToken);
+        userService.logout(authData);
+        res.status(200);
+        return "Logout successful";
     }
 
     private Object clearDB(Request req, Response res) {

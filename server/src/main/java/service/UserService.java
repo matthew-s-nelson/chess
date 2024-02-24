@@ -30,6 +30,7 @@ public class UserService {
   }
   public void logout(AuthData auth) {
     try {
+      authDAO.getAuth(auth.authToken());
       authDAO.deleteAuth(auth.authToken());
     } catch (DataAccessException e) {
       throw new RuntimeException(e);
