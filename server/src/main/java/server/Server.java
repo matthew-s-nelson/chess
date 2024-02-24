@@ -23,6 +23,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
         Spark.delete("/db", this::clearDB);
 
         Spark.awaitInitialization();
@@ -37,6 +38,12 @@ public class Server {
     private Object register(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), UserData.class);
         var auth = userService.register(user);
+        return new Gson().toJson(auth);
+    }
+
+    private Object login(Request req, Response res) {
+        var user = new Gson().fromJson(req.body(), UserData.class);
+        var auth = userService.login(user);
         return new Gson().toJson(auth);
     }
 
