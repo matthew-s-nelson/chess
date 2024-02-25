@@ -27,10 +27,10 @@ public class MemoryGameDAO implements GameDAO {
   }
 
   @Override
-  public int selectGame(int gameID) throws DataAccessException{
+  public GameData selectGame(int gameID) throws DataAccessException{
     for (GameData game: gameData) {
       if (game.gameID() == gameID) {
-        return gameID;
+        return game;
       }
     }
     throw new DataAccessException("No game exists with this gameID.");
@@ -41,7 +41,7 @@ public class MemoryGameDAO implements GameDAO {
     for (GameData game: gameData) {
       if (game.gameID() == gameID) {
         gameData.remove(game);
-        GameData updatedGame = game.updateWhiteUsername(username);
+        GameData updatedGame = game.updateBlackUsername(username);
         gameData.add(updatedGame);
         return;
       }
@@ -54,7 +54,7 @@ public class MemoryGameDAO implements GameDAO {
     for (GameData game: gameData) {
       if (game.gameID() == gameID) {
         gameData.remove(game);
-        GameData updatedGame = game.updateBlackUsername(username);
+        GameData updatedGame = game.updateWhiteUsername(username);
         gameData.add(updatedGame);
         return;
       }

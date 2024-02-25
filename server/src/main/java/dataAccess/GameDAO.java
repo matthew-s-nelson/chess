@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface GameDAO {
   Collection<GameData> selectAllGames();
   GameData insertGame(String gameName);
-  int selectGame(int gameID) throws DataAccessException;
+  GameData selectGame(int gameID) throws DataAccessException;
   void insertBlackUsername(int gameID, String username) throws DataAccessException;
   void insertWhiteUsername(int gameID, String username) throws DataAccessException;
   void updateGame(int gameID, ChessGame game) throws DataAccessException;

@@ -21,10 +21,10 @@ public class MemoryAuthDAO implements AuthDAO{
   }
 
   @Override
-  public String getAuth(String authToken) throws DataAccessException{
+  public AuthData getAuth(String authToken) throws DataAccessException{
     for (AuthData auth: authData) {
       if (Objects.equals(auth.authToken(), authToken)) {
-        return authToken;
+        return auth;
       }
     }
     throw new DataAccessException("AuthToken does not exist.");

@@ -35,6 +35,7 @@ public class Server {
         Spark.delete("/db", this::clearDB);
         Spark.post("/game", this::createGame);
         Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -67,6 +68,8 @@ public class Server {
     }
 
     // If gameName already exists, throw an error
+    // List only gameID?
+    // Put empty string for other params of GameData instead of null?
     private Object createGame(Request req, Response res) {
         var authToken = req.headers("authorization");
         AuthData authData = new AuthData("", authToken);
@@ -80,6 +83,15 @@ public class Server {
         AuthData authData = new AuthData("", authToken);
         Collection<GameData> games = gameService.listGames(authData);
         return new Gson().toJson(games);
+    }
+
+    private Object joinGame(Request req, Response res) {
+        var authToken = req.headers("authorization");
+        AuthData authData = new AuthData("", authToken);
+        var joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
+        gameService.joinGame(authData, joinGameRequest);
+        res.status(200);
+        return new Gson().toJson("");
     }
 
     private Object clearDB(Request req, Response res) {

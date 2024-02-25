@@ -3,8 +3,11 @@ package service;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
+import org.springframework.security.core.userdetails.User;
+import server.JoinGameRequest;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class GameService {
   private UserDAO userDAO;
@@ -35,5 +38,20 @@ public class GameService {
     return gameDAO.insertGame(gameName);
   }
 
-//  public void joinGame(AuthData auth, )
+  public void joinGame(AuthData authData, JoinGameRequest joinGameRequest) {
+    try {
+      AuthData auth = authDAO.getAuth(authData.authToken());
+      GameData game = gameDAO.selectGame(joinGameRequest.gameID());
+      if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && game.whiteUsername() == null) {
+        gameDAO.insertWhiteUsername(joinGameRequest.gameID(), auth.username());
+        return;
+      } else if (Objects.equals(joinGameRequest.playerColor(), "BLACK") && game.blackUsername() == null) {
+        gameDAO.insertBlackUsername(joinGameRequest.gameID(), auth.username());
+        return;
+      }
+    } catch (DataAccessException e) {
+      throw new RuntimeException(e);
+    }
+    throw new RuntimeException("Player already playing");
+  }
 }
