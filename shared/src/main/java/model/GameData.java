@@ -10,8 +10,8 @@ public record GameData (int gameID, String whiteUsername, String blackUsername, 
     this.gameName = gameName;
     this.game = game;
   }
-  public GameData(int gameID) {
-    this(gameID, null, null, null, null);
+  public GameData(int gameID, String gameName) {
+    this(gameID, null, null, gameName, null);
   }
 
   public GameData updateWhiteUsername(String newWhiteName) {

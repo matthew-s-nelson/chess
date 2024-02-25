@@ -3,17 +3,21 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import service.ClearService;
+import service.GameService;
 import service.UserService;
 import spark.*;
 
 public class Server {
     private final UserService userService;
+    private final GameService gameService;
     private final ClearService clearService;
 
     public Server(AuthDAO authDAO, GameDAO gameDAO, UserDAO userDAO) {
         userService = new UserService(userDAO, authDAO);
+        gameService = new GameService(userDAO, authDAO, gameDAO);
         clearService = new ClearService(authDAO, userDAO, gameDAO);
 
     }
@@ -27,6 +31,8 @@ public class Server {
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clearDB);
+        Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -49,13 +55,22 @@ public class Server {
         return new Gson().toJson(auth);
     }
 
-    //Not working
+    // Add an exception here.
     private Object logout(Request req, Response res) {
         var authToken = req.headers("authorization");
         AuthData authData = new AuthData("", authToken);
         userService.logout(authData);
         res.status(200);
-        return "Logout successful";
+        return new Gson().toJson("");
+    }
+
+    // If gameName already exists, throw an error
+    private Object createGame(Request req, Response res) {
+        var authToken = req.headers("authorization");
+        AuthData authData = new AuthData("", authToken);
+        var gameName = new Gson().fromJson(req.body(), GameData.class);
+        GameData game = gameService.createGame(authData, gameName.gameName());
+        return new Gson().toJson(game);
     }
 
     private Object clearDB(Request req, Response res) {

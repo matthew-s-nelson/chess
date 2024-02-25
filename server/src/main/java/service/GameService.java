@@ -11,10 +11,10 @@ public class GameService {
   private AuthDAO authDAO;
   private GameDAO gameDAO;
 
-  public GameService() {
-    userDAO = new MemoryUserDAO();
-    authDAO = new MemoryAuthDAO();
-    gameDAO = new MemoryGameDAO();
+  public GameService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
+    this.userDAO = userDAO;
+    this.authDAO = authDAO;
+    this.gameDAO = gameDAO;
   }
 
   public Collection<GameData> listGames(AuthData authData) {
@@ -26,13 +26,13 @@ public class GameService {
     return gameDAO.selectAllGames();
   }
 
-  public GameData createGame(AuthData authData) {
+  public GameData createGame(AuthData authData, String gameName) {
     try {
       authDAO.getAuth(authData.authToken());
     } catch (DataAccessException e) {
       throw new RuntimeException(e);
     }
-    return gameDAO.insertGame();
+    return gameDAO.insertGame(gameName);
   }
 
 //  public void joinGame(AuthData auth, )

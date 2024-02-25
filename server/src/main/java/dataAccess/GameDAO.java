@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface GameDAO {
   Collection<GameData> selectAllGames();
-  GameData insertGame();
+  GameData insertGame(String gameName);
   int selectGame(int gameID) throws DataAccessException;
   void insertBlackUsername(int gameID, String username) throws DataAccessException;
   void insertWhiteUsername(int gameID, String username) throws DataAccessException;
