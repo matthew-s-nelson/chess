@@ -10,6 +10,8 @@ import service.GameService;
 import service.UserService;
 import spark.*;
 
+import java.util.Collection;
+
 public class Server {
     private final UserService userService;
     private final GameService gameService;
@@ -68,9 +70,16 @@ public class Server {
     private Object createGame(Request req, Response res) {
         var authToken = req.headers("authorization");
         AuthData authData = new AuthData("", authToken);
-        var gameName = new Gson().fromJson(req.body(), GameData.class);
-        GameData game = gameService.createGame(authData, gameName.gameName());
+        var gameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
+        GameData game = gameService.createGame(authData, gameRequest.gamename());
         return new Gson().toJson(game);
+    }
+
+    private Object listGames(Request req, Response res) {
+        var authToken = req.headers("authorization");
+        AuthData authData = new AuthData("", authToken);
+        Collection<GameData> games = gameService.listGames(authData);
+        return new Gson().toJson(games);
     }
 
     private Object clearDB(Request req, Response res) {
