@@ -38,10 +38,10 @@ public class GameService {
     return gameDAO.insertGame(gameName);
   }
 
-  public void joinGame(AuthData authData, JoinGameRequest joinGameRequest) throws GameJoinException {
+  public void joinGame(AuthData authData, JoinGameRequest joinGameRequest) throws GameJoinException, DataAccessException {
+    GameData game = gameDAO.selectGame(joinGameRequest.gameID());
     try {
       AuthData auth = authDAO.getAuth(authData.authToken());
-      GameData game = gameDAO.selectGame(joinGameRequest.gameID());
       if (joinGameRequest.playerColor() == null) {
         return;
       } else if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && game.whiteUsername() == null) {

@@ -133,7 +133,7 @@ public class Server {
             gameService.joinGame(authData, joinGameRequest);
             res.status(200);
             return new Gson().toJson(null);
-        } catch (JsonSyntaxException j) {
+        } catch (JsonSyntaxException | DataAccessException j) {
             res.status(400);
             return new Gson().toJson(new ErrorResponse("Error: bad request"));
         } catch (RuntimeException e) {
