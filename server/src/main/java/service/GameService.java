@@ -38,7 +38,7 @@ public class GameService {
     return gameDAO.insertGame(gameName);
   }
 
-  public void joinGame(AuthData authData, JoinGameRequest joinGameRequest) {
+  public void joinGame(AuthData authData, JoinGameRequest joinGameRequest) throws GameJoinException {
     try {
       AuthData auth = authDAO.getAuth(authData.authToken());
       GameData game = gameDAO.selectGame(joinGameRequest.gameID());
@@ -52,6 +52,6 @@ public class GameService {
     } catch (DataAccessException e) {
       throw new RuntimeException(e);
     }
-    throw new RuntimeException("Player already playing");
+    throw new GameJoinException("Gane already taken");
   }
 }

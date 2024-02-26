@@ -7,6 +7,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import service.ClearService;
+import service.GameJoinException;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -121,12 +122,23 @@ public class Server {
     }
 
     private Object joinGame(Request req, Response res) {
-        var authToken = req.headers("authorization");
-        AuthData authData = new AuthData("", authToken);
-        var joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
-        gameService.joinGame(authData, joinGameRequest);
-        res.status(200);
-        return new Gson().toJson("");
+        try {
+            var authToken=req.headers("authorization");
+            AuthData authData=new AuthData("", authToken);
+            var joinGameRequest=new Gson().fromJson(req.body(), JoinGameRequest.class);
+            gameService.joinGame(authData, joinGameRequest);
+            res.status(200);
+            return new Gson().toJson("");
+        } catch (JsonSyntaxException j) {
+            res.status(400);
+            return new Gson().toJson(new ErrorResponse("Error: bad request"));
+        } catch (RuntimeException e) {
+            res.status(401);
+            return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
+        } catch (GameJoinException g) {
+            res.status(403);
+            return new Gson().toJson(new ErrorResponse("Error: already taken"));
+        }
     }
 
     private Object clearDB(Request req, Response res) {
