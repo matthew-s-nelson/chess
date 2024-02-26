@@ -14,7 +14,7 @@ public class UserService {
   }
   public AuthData register(UserData user) {
     if (userDAO.userExists(user.username())) {
-      return null;
+      throw new RuntimeException();
     } else {
       userDAO.insertUser(user);
       return authDAO.createAuth(user.username());

@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
@@ -47,9 +48,18 @@ public class Server {
     }
 
     private Object register(Request req, Response res) {
-        var user = new Gson().fromJson(req.body(), UserData.class);
-        var auth = userService.register(user);
-        return new Gson().toJson(auth);
+        try {
+            var user = new Gson().fromJson(req.body(), UserData.class);
+            var auth = userService.register(user);
+            return new Gson().toJson(auth);
+        } catch (JsonSyntaxException j) {
+            res.status(400);
+            return new Gson().toJson(new ErrorResponse("Error: bad request"));
+        } catch (RuntimeException e) {
+            res.status(403);
+            return new Gson().toJson(new ErrorResponse("Error: already taken"));
+        }
+
     }
 
     private Object login(Request req, Response res) {
@@ -97,7 +107,7 @@ public class Server {
     private Object clearDB(Request req, Response res) {
         clearService.clear();
         res.status(200);
-        return "";
+        return new Gson().toJson("");
     }
 
     public static void main(String[] args) {
