@@ -101,10 +101,15 @@ public class Server {
     }
 
     private Object listGames(Request req, Response res) {
-        var authToken = req.headers("authorization");
-        AuthData authData = new AuthData("", authToken);
-        Collection<GameData> games = gameService.listGames(authData);
-        return new Gson().toJson(games);
+        try {
+            var authToken=req.headers("authorization");
+            AuthData authData=new AuthData("", authToken);
+            Collection<GameData> games=gameService.listGames(authData);
+            return new Gson().toJson(games);
+        } catch (RuntimeException e) {
+            res.status(401);
+            return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
+        }
     }
 
     private Object joinGame(Request req, Response res) {
