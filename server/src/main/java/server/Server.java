@@ -19,7 +19,11 @@ public class Server {
     private final GameService gameService;
     private final ClearService clearService;
 
-    public Server(AuthDAO authDAO, GameDAO gameDAO, UserDAO userDAO) {
+    public Server() {
+        AuthDAO authDAO = new MemoryAuthDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
+        UserDAO userDAO = new MemoryUserDAO();
+
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(userDAO, authDAO, gameDAO);
         clearService = new ClearService(authDAO, userDAO, gameDAO);
@@ -83,7 +87,7 @@ public class Server {
             AuthData authData=new AuthData("", authToken);
             userService.logout(authData);
             res.status(200);
-            return new Gson().toJson("");
+            return new Gson().toJson(null);
         } catch (RuntimeException e) {
             res.status(401);
             return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
@@ -128,7 +132,7 @@ public class Server {
             var joinGameRequest=new Gson().fromJson(req.body(), JoinGameRequest.class);
             gameService.joinGame(authData, joinGameRequest);
             res.status(200);
-            return new Gson().toJson("");
+            return new Gson().toJson(null);
         } catch (JsonSyntaxException j) {
             res.status(400);
             return new Gson().toJson(new ErrorResponse("Error: bad request"));
@@ -144,10 +148,10 @@ public class Server {
     private Object clearDB(Request req, Response res) {
         clearService.clear();
         res.status(200);
-        return new Gson().toJson("");
+        return new Gson().toJson(null);
     }
 
     public static void main(String[] args) {
-        new Server(new MemoryAuthDAO(), new MemoryGameDAO(), new MemoryUserDAO()).run(8080);
+        new Server().run(8080);
     }
 }
