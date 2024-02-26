@@ -93,11 +93,19 @@ public class Server {
     // List only gameID?
     // Put empty string for other params of GameData instead of null?
     private Object createGame(Request req, Response res) {
-        var authToken = req.headers("authorization");
-        AuthData authData = new AuthData("", authToken);
-        var gameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
-        GameData game = gameService.createGame(authData, gameRequest.gamename());
-        return new Gson().toJson(game);
+        try {
+            var authToken=req.headers("authorization");
+            AuthData authData=new AuthData("", authToken);
+            var gameRequest=new Gson().fromJson(req.body(), CreateGameRequest.class);
+            GameData game=gameService.createGame(authData, gameRequest.gamename());
+            return new Gson().toJson(game);
+        } catch (JsonSyntaxException j) {
+        res.status(400);
+        return new Gson().toJson(new ErrorResponse("Error: bad request"));
+        } catch (RuntimeException e) {
+            res.status(401);
+            return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
+        }
     }
 
     private Object listGames(Request req, Response res) {
