@@ -51,6 +51,7 @@ public class Server {
         try {
             var user = new Gson().fromJson(req.body(), UserData.class);
             var auth = userService.register(user);
+            res.status(200);
             return new Gson().toJson(auth);
         } catch (JsonSyntaxException j) {
             res.status(400);
@@ -64,8 +65,14 @@ public class Server {
 
     private Object login(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), UserData.class);
-        var auth = userService.login(user);
-        return new Gson().toJson(auth);
+        try {
+            var auth = userService.login(user);
+            res.status(200);
+            return new Gson().toJson(auth);
+        } catch(RuntimeException e) {
+            res.status(401);
+            return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
+        }
     }
 
     // Add an exception here.
