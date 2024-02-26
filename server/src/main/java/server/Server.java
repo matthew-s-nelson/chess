@@ -77,11 +77,16 @@ public class Server {
 
     // Add an exception here.
     private Object logout(Request req, Response res) {
-        var authToken = req.headers("authorization");
-        AuthData authData = new AuthData("", authToken);
-        userService.logout(authData);
-        res.status(200);
-        return new Gson().toJson("");
+        try {
+            var authToken=req.headers("authorization");
+            AuthData authData=new AuthData("", authToken);
+            userService.logout(authData);
+            res.status(200);
+            return new Gson().toJson("");
+        } catch (RuntimeException e) {
+            res.status(401);
+            return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
+        }
     }
 
     // If gameName already exists, throw an error
