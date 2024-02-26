@@ -6,10 +6,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import service.ClearService;
-import service.GameJoinException;
-import service.GameService;
-import service.UserService;
+import service.*;
 import spark.*;
 
 import java.util.Collection;
@@ -58,7 +55,7 @@ public class Server {
             var auth = userService.register(user);
             res.status(200);
             return new Gson().toJson(auth);
-        } catch (JsonSyntaxException j) {
+        } catch (JsonSyntaxException | BadRequestException j) {
             res.status(400);
             return new Gson().toJson(new ErrorResponse("Error: bad request"));
         } catch (RuntimeException e) {
