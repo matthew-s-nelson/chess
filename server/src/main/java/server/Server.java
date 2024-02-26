@@ -118,7 +118,7 @@ public class Server {
             var authToken=req.headers("authorization");
             AuthData authData=new AuthData("", authToken);
             Collection<GameData> games=gameService.listGames(authData);
-            return new Gson().toJson(games);
+            return new Gson().toJson(new ListGamesResponse(games));
         } catch (RuntimeException e) {
             res.status(401);
             return new Gson().toJson(new ErrorResponse("Error: unauthorized"));
