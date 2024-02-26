@@ -42,7 +42,9 @@ public class GameService {
     try {
       AuthData auth = authDAO.getAuth(authData.authToken());
       GameData game = gameDAO.selectGame(joinGameRequest.gameID());
-      if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && game.whiteUsername() == null) {
+      if (joinGameRequest.playerColor() == null) {
+        return;
+      } else if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && game.whiteUsername() == null) {
         gameDAO.insertWhiteUsername(joinGameRequest.gameID(), auth.username());
         return;
       } else if (Objects.equals(joinGameRequest.playerColor(), "BLACK") && game.blackUsername() == null) {
