@@ -8,6 +8,8 @@ import chess.ChessPosition;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static chessMoves.MoveFinder.findMoves;
+
 public class RookMove {
   private ChessBoard board;
   private ChessPosition myPosition;
@@ -19,28 +21,13 @@ public class RookMove {
     this.pieceColor = pieceColor;
   }
 
-  public Collection<ChessMove> findMoves(int rowChange, int colChange){
-    ArrayList<ChessMove> validMoves = new ArrayList<>();
-    ChessPosition newPos = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
-
-    while(newPos.inBounds() && board.getPiece(newPos) == null){
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
-      newPos.updatePos(rowChange, colChange);
-    }
-
-    if(newPos.inBounds() && board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != pieceColor){
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
-    }
-    return validMoves;
-  }
-
   public Collection<ChessMove> move(){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(findMoves(0, 1));
-    validMoves.addAll(findMoves(0, -1));
-    validMoves.addAll(findMoves(1, 0));
-    validMoves.addAll(findMoves(-1, 0));
+    validMoves.addAll(findMoves(pieceColor, board, myPosition,0, 1));
+    validMoves.addAll(findMoves(pieceColor, board, myPosition,0, -1));
+    validMoves.addAll(findMoves(pieceColor, board, myPosition,1, 0));
+    validMoves.addAll(findMoves(pieceColor, board, myPosition,-1, 0));
 
     return validMoves;
   }
