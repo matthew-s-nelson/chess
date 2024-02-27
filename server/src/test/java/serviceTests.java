@@ -11,6 +11,7 @@ import service.BadRequestException;
 import service.GameJoinException;
 import service.GameService;
 import service.UserService;
+import spark.utils.Assert;
 
 import javax.xml.crypto.Data;
 import java.util.Collection;
@@ -69,18 +70,16 @@ public class serviceTests {
   @Test
   public void testLogoutGood() {
     UserService userService = new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
+    AuthData auth = null;
     try {
-      AuthData auth = userService.register(new UserData("matt", "nel", "email"));
-      userService.logout(auth);
-      AuthData result = userService.login(new UserData("matt", "nel", "email"));
-      AuthData expected = new AuthData("matt", "");
+      auth = userService.register(new UserData("matt", "nel", "email"));
     } catch (BadRequestException e) {
       Assertions.fail();
-    } catch (RuntimeException f) {
-      Assertions.fail();
     }
-
-    Assertions.assertEquals(true, true);
+    AuthData finalAuth=auth;
+    Assertions.assertDoesNotThrow(() -> {
+      userService.logout(finalAuth);
+    });
   }
 
   @Test
@@ -191,12 +190,10 @@ public class serviceTests {
       Assertions.fail();
     }
     gameService.createGame(auth, "test");
-    try {
-      gameService.joinGame(auth, new JoinGameRequest("BLACK", 1));
-    } catch (RuntimeException | GameJoinException | DataAccessException e) {
-      Assertions.fail();
-    }
-    Assertions.assertTrue(true);
+    AuthData finalAuth=auth;
+    Assertions.assertDoesNotThrow(() -> {
+      gameService.joinGame(finalAuth, new JoinGameRequest("BLACK", 1));
+    });
   }
 
   @Test
