@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.JoinGameRequest;
-import service.BadRequestException;
-import service.GameJoinException;
-import service.GameService;
-import service.UserService;
+import service.*;
 import spark.utils.Assert;
 
 import javax.xml.crypto.Data;
@@ -213,5 +210,23 @@ public class serviceTests {
     Assertions.assertThrows(DataAccessException.class, () -> {
       gameService.joinGame(finalAuth, new JoinGameRequest("BLACK", 1));
     });
+  }
+
+  @Test
+  public void testClear() {
+    UserDAO userDAO=new MemoryUserDAO();
+    AuthDAO authDAO=new MemoryAuthDAO();
+    GameDAO gameDAO=new MemoryGameDAO();
+    UserService userService=new UserService(userDAO, authDAO);
+    ClearService clearService=new ClearService(authDAO, userDAO, gameDAO);
+    try {
+      AuthData auth=userService.register(new UserData("matt", "nel", "email"));
+    } catch (BadRequestException e) {
+      Assertions.fail();
+    }
+    Assertions.assertDoesNotThrow(() -> {
+      clearService.clear();
+    });
+
   }
 }
