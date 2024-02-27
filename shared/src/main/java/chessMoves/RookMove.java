@@ -1,14 +1,19 @@
-package chess;
+package chessMoves;
+
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BishopMove {
+public class RookMove {
   private ChessBoard board;
   private ChessPosition myPosition;
   private ChessGame.TeamColor pieceColor;
 
-  public BishopMove(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor){
+  public RookMove(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor){
     this.board = board;
     this.myPosition = myPosition;
     this.pieceColor = pieceColor;
@@ -32,10 +37,10 @@ public class BishopMove {
   public Collection<ChessMove> move(){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(findMoves(1, 1));
-    validMoves.addAll(findMoves(-1, 1));
-    validMoves.addAll(findMoves(1, -1));
-    validMoves.addAll(findMoves(-1, -1));
+    validMoves.addAll(findMoves(0, 1));
+    validMoves.addAll(findMoves(0, -1));
+    validMoves.addAll(findMoves(1, 0));
+    validMoves.addAll(findMoves(-1, 0));
 
     return validMoves;
   }
