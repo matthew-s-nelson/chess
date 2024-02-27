@@ -27,21 +27,26 @@ public class PawnMove {
     return validMoves;
   }
 
+  public Collection<ChessMove> makePromotions(ChessPosition newPos) {
+    Collection<ChessMove> moves = new ArrayList<>();
+
+    moves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.BISHOP));
+    moves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.KNIGHT));
+    moves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.QUEEN));
+    moves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.ROOK));
+
+    return moves;
+  }
+
   public Collection<ChessMove> capture(int rowChange, int colChange){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
     ChessPosition newPos = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
 
     if(newPos.inBounds() && board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != pieceColor){
       if (myPosition.getRow() == 7 && pieceColor == ChessGame.TeamColor.WHITE){
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.BISHOP));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.KNIGHT));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.QUEEN));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.ROOK));
+        validMoves.addAll(makePromotions(newPos));
       } else if (myPosition.getRow() == 2 && pieceColor == ChessGame.TeamColor.BLACK) {
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.BISHOP));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.KNIGHT));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.QUEEN));
-        validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.ROOK));
+        validMoves.addAll(makePromotions(newPos));
       } else {
         validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
       }
@@ -70,10 +75,7 @@ public class PawnMove {
     ChessPosition newPos = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn());
 
     if (newPos.inBounds() && board.getPiece(newPos) == null){
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.BISHOP));
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.KNIGHT));
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.QUEEN));
-      validMoves.add(new ChessMove(myPosition, newPos.copy(), ChessPiece.PieceType.ROOK));
+      validMoves.addAll(makePromotions(newPos));
     }
 
     return validMoves;

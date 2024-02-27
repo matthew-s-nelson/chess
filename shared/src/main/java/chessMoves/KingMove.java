@@ -21,18 +21,6 @@ public class KingMove {
     this.pieceColor = pieceColor;
   }
 
-//  public Collection<ChessMove> findMoves(int rowChange, int colChange){
-//    ArrayList<ChessMove> validMoves = new ArrayList<>();
-//    ChessPosition newPos = new ChessPosition(myPosition.getRow() + rowChange, myPosition.getColumn() + colChange);
-//
-//    if (newPos.inBounds() && board.getPiece(newPos) == null){
-//      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
-//    } else if(newPos.inBounds() && board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != pieceColor){
-//      validMoves.add(new ChessMove(myPosition, newPos.copy(), null));
-//    }
-//    return validMoves;
-//  }
-
   public Collection<ChessMove> move(){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
