@@ -656,3 +656,87 @@ Three important types of software testing:
 - runts all the tests
 - Must be easy to add new tests to
 - Tells you that everything worked, or gives you a list of failed tests
+
+# Databases
+## Database Management Systems (DBMS)
+- Implements databases
+- Store data in files in a way that scales to large amounts of data and allows data to be accessed efficiently.
+## Relational Databases
+- Relations = tables
+- Tuples = rows
+- In the relational data model, data is stored in tables consisting of columns and rows.
+  - Tables are like classes
+  - Each row in a table stores the data you may think of as belonging to an object
+  - Columns in a row store the object's attributes (instance variables)
+- Each row has a "Primary Key" which is a unique identifier for that row. Relationships between rows in different tables are represent using keys
+- All together it is called a schema.
+- Primary key is a unique identifier
+  - When that key is used in another table to relate two tables, it is called a foreign key in that table.
+- Artificial primary key: a key that has no meaning outside the relational model (e.g. book with the id 3 in a table)
+- Natural key: a key that has meaning outside the table (e.g. a genre with the key "nonFiction")
+### Modeling Object Relationships
+- One to one: A person has one Social security record; a social security record belongs to one Person
+  - Can combine into 1 table.
+- One to many: A book has one category; a category has many books
+  - Put key of one side and put it in many
+- Many to many: A person can read many books; a book can be read by many people
+## SQL (Structures Query Language)
+### SQL Data Types
+- Character Strings
+  - CHARACTER(n) or CHAR(n) - Fixed-width n-character string, padded w/ spaces as needed
+  - CHARACTER VARYING(n) or VARCHAR(n) - Variable-width string with a max size of n characters
+- Bit strings
+  - BIT(n) - an array of n bits
+  - BIT VARYING(n) - an array of max n bits
+- Numbers
+  - INTEGER and SMALLINT
+  - FLOAT, REAL and DOUBLE PRECISION
+  - NUMERIC (precision, scale) or DECIMATE(precision, scale)
+- Large Objects
+  - BLOB - binary large obj (images, sound, video, etc.)
+  - CLOB - character large object (text documents)
+- DATE, TIME, TIME WITH TIME ZONE (TIMETZ), TIMESTAMP, TIMESTAMP WITH TIME ZONE
+### Creating tables
+1. Primary keys
+2. Null / not null (nullable by default)
+3. Autoincrement
+4. foreign keys
+Order doesn't matter
+```roomsql
+create table book
+(
+    id integer not null primary key auto_increment,
+    title varchar(255) not null,
+    author varchar(255) not null,
+    genre varchar(32) not null,
+    category_id integer not null,
+    foreign key(genre) references genre(genre),
+    foreign key(category_id) references category(id)
+)
+```
+#### Foreign key constraints
+- not required - can query without them
+- Enforce that values used as foreign keys exist in their parent tables
+- Disallow deletes of the parent table row when referenced as a foreign key in another table
+- Dissallow updats of the parent row primary key value if that would "orphan" the foreign keys
+- Can specify that deletes and/or updates to the primary keys automatically affect the foreign key rows
+### Dropping Tables
+- Drop table
+  - drop table book (throws an error if it doesn't exist)
+  - drop table if exists book
+- When using foreign key constraints, order of deletes matters
+  - Can't delete a table with values being used as foreign keys in another table (delete the tables with the foreign keys first)
+### Inserting, updating and deleting data in tables
+- INSERT
+  - INSERT INTO book (title, author, genre, category_id) values ('The Work and the Glory', 'Gerald Lund', "Historical Fiction', 3);
+- Updates
+```roomsql
+UPDATE member
+SET name = 'Christ Jones', email_address = 'christ@gmail.com'
+WHERE id = 3
+```
+- Deletes
+```roomsql
+DELETE FROM member
+WHERE id = 3
+```
