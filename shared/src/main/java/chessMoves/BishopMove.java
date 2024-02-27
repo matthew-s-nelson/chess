@@ -8,7 +8,7 @@ import chess.ChessPosition;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static chessMoves.MoveFinder.findMoves;
+import static chessMoves.MoveFinder.findMovesMultipleSpaces;
 
 public class BishopMove {
   private ChessBoard board;
@@ -24,10 +24,10 @@ public class BishopMove {
   public Collection<ChessMove> move(){
     ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-    validMoves.addAll(findMoves(pieceColor, board, myPosition, 1, 1));
-    validMoves.addAll(findMoves(pieceColor, board, myPosition, -1, 1));
-    validMoves.addAll(findMoves(pieceColor, board, myPosition, 1, -1));
-    validMoves.addAll(findMoves(pieceColor, board, myPosition, -1, -1));
+    validMoves.addAll(findMovesMultipleSpaces(pieceColor, board, myPosition, 1, 1));
+    validMoves.addAll(findMovesMultipleSpaces(pieceColor, board, myPosition, -1, 1));
+    validMoves.addAll(findMovesMultipleSpaces(pieceColor, board, myPosition, 1, -1));
+    validMoves.addAll(findMovesMultipleSpaces(pieceColor, board, myPosition, -1, -1));
 
     return validMoves;
   }
