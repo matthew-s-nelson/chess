@@ -54,6 +54,6 @@ public class GameService {
     } catch (DataAccessException e) {
       throw new RuntimeException(e);
     }
-    throw new GameJoinException("Gane already taken");
+    throw new GameJoinException("Game already taken");
   }
 }
