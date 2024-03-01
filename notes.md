@@ -740,3 +740,63 @@ WHERE id = 3
 DELETE FROM member
 WHERE id = 3
 ```
+## Retrieving data w/ SQL Queries
+SELECT Column, Column,
+FROM Table, Table, ...
+WHERE Condition (rows)
+
+SELECT *
+FROM Book means select everything from book
+
+SELECT author, title
+FROM book
+WHERE genre = "NonFiction"
+
+### Queries - Join
+SELECT member.name, book.title
+FROM member, books_read, book
+WHERE member.id = books_read.member_id AND book.id = books_read.book_id (Finds all the members with all the books they've read)
+could add AND genre="NonFiction" to find only the nonfiction books they've read. 
+
+SELECT member.name, book.title
+FROM member
+INSERT JOIN books_read ON member.id = books_read.member_id
+INNER JOIN book ON books_read.book_id = book.id
+WHERE genre = "NonFiction" (does same thing)
+
+## Database Transactions
+- By default, each SQL statement is executed in a transaction by itself
+- Transactions are useful when tey consist of multiple SQL statements, since you want to make sure that either all fo them or none of them succed
+Multi-statement transaction,
+  - Begin Transaction;
+  - SQL statement 1;
+  - SQL statement 2;
+  - ...
+  - COMMIT TRANSACTION; or ROLLBACK TRANSACTION;
+
+## Java Database Access from Java
+- load db driver
+- Open a db connection
+- Start a transaction
+- Execute queries and/or updates
+- commit or rollback the transaction
+- close the db connection
+- Retrieving auto-increment ids
+
+### Open a db Connection/start a transaction
+```java
+import java.sql.*;
+
+String connectionURL = "jdbc connection string" + "user=username&password=password";
+
+Connection connection = null;
+try(Connection c = DriverManager.getConection(conecctionURL)) {  // Try with resources will automatically close it.
+  connection = c;
+  // Start a transaction
+  connection.setAutoCommit(false);
+} catch(SQLException ex){
+  // Error
+        }
+```
+SELECT COUNT(*) AS count FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ? (returns 1 if db already exists and 0 if it doesn't)
+in DAO's put an if statement, and only create the DB if it isn't already created.
