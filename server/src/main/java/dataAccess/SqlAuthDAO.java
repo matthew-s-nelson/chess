@@ -21,7 +21,7 @@ public class SqlAuthDAO implements AuthDAO {
 
         preparedStatement.executeUpdate();
       } catch (SQLException e) {
-        throw new RuntimeException("SQL Exception");
+        throw new RuntimeException(e);
       }
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException("Problem with connection");

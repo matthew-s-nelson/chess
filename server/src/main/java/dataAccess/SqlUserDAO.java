@@ -56,11 +56,11 @@ public class SqlUserDAO implements UserDAO{
   @Override
   public UserData selectUser(String username, String password) {
     try (var conn = DatabaseManager.getConnection()) {
-      try (var preparedStatement=conn.prepareStatement("SELECT * FROM user WHERE username=?, password=?")) {
+      try (var preparedStatement=conn.prepareStatement("SELECT * FROM user WHERE username=? AND password=?")) {
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password);
         try (var rs=preparedStatement.executeQuery()) {
-          while (rs.next()) {
+          if (rs.next()) {
             var rsUsername=rs.getString("username");
             var rsPassword=rs.getString("password");
             var rsEmail=rs.getString("email");
@@ -69,7 +69,7 @@ public class SqlUserDAO implements UserDAO{
           }
         }
       } catch (SQLException sql) {
-        throw new RuntimeException("SQL Exception");
+        throw new RuntimeException(sql);
       }
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException("DataAccessException");
