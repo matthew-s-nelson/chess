@@ -13,17 +13,67 @@ public class SqlUserDAO implements UserDAO{
   }
   @Override
   public void insertUser(UserData user) {
-    var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-    executeUpdate(statement, user.username(), user.password(), user.email());
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement="INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+      try (var preparedStatement=conn.prepareStatement(statement)) {
+        preparedStatement.setString(1, user.username());
+        preparedStatement.setString(2, user.password());
+        preparedStatement.setString(3, user.email());
+
+        preparedStatement.executeUpdate();
+      } catch (SQLException e) {
+        throw new RuntimeException("SQL Exception");
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("Problem with connection");
+    }
   }
 
   @Override
   public boolean userExists(String username) {
-    return false;
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("SELECT * FROM user WHERE username=?")) {
+        preparedStatement.setString(1, username);
+        try (var rs=preparedStatement.executeQuery()) {
+          if (rs.next()) {
+            var rsUsername=rs.getString("username");
+            var rsPassword=rs.getString("password");
+            var rsEmail=rs.getString("email");
+
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } catch (SQLException sql) {
+        throw new RuntimeException("SQL Exception");
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
   }
 
   @Override
-  public UserData selectUser(String username, String password) throws DataAccessException {
+  public UserData selectUser(String username, String password) {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("SELECT * FROM user WHERE username=?, password=?")) {
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, password);
+        try (var rs=preparedStatement.executeQuery()) {
+          while (rs.next()) {
+            var rsUsername=rs.getString("username");
+            var rsPassword=rs.getString("password");
+            var rsEmail=rs.getString("email");
+
+            return new UserData(rsUsername, rsPassword, rsEmail);
+          }
+        }
+      } catch (SQLException sql) {
+        throw new RuntimeException("SQL Exception");
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
     return null;
   }
 
@@ -43,30 +93,33 @@ public class SqlUserDAO implements UserDAO{
         }
         ps.executeUpdate();
       }
-    } catch (SQLException e) {
+    } catch (SQLException | DataAccessException e) {
 
     }
   }
 
-  private final String[] createStatements = {
-          """
-          CREATE TABLE IF NOT EXISTS user (
-            'username' varchar(126) NOT NULL,
-            'password' varchar(126) NOT NULL,
-            'email' varchar(126) NOT NULL,
-            PRIMARY KEY('username')
-          )
-          """
-  };
 
-  private void configureDatabase() throws DataAccessException {
-    DatabaseManager.createDatabase();
+
+  private void configureDatabase() {
+    try {
+      DatabaseManager.createDatabase();
+    } catch (DataAccessException e) {
+      throw new RuntimeException("Problem starting the server");
+    }
     try (var conn = DatabaseManager.getConnection()) {
-      try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
-        var rs = preparedStatement.executeQuery();
-        rs.next();
-        System.out.println(rs.getInt((1)));
+      var createTable = """
+          CREATE TABLE IF NOT EXISTS user (
+            username varchar(126) NOT NULL,
+            password varchar(126) NOT NULL,
+            email varchar(126) NOT NULL,
+            PRIMARY KEY(username)
+          )""";
+      try (var preparedStatement = conn.prepareStatement(createTable)) {
+        preparedStatement.executeUpdate();
       }
+
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
   }
 }

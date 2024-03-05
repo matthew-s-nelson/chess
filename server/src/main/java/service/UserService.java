@@ -12,6 +12,7 @@ public class UserService {
     this.userDAO = userDAO;
     this.authDAO = authDAO;
   }
+
   public AuthData register(UserData user) throws BadRequestException {
     if (user.username() == null || user.password() == null || user.email() == null) {
       throw new BadRequestException("All parameters are required");
