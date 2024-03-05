@@ -1,6 +1,7 @@
 package dataAccess;
 
 import model.AuthData;
+import model.UserData;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -31,17 +32,51 @@ public class SqlAuthDAO implements AuthDAO {
 
   @Override
   public AuthData getAuth(String authToken) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
+        preparedStatement.setString(1, authToken);
+        try (var rs=preparedStatement.executeQuery()) {
+          if (rs.next()) {
+            var rsUsername=rs.getString("username");
+            var rsAuth=rs.getString("authToken");
+
+            return new AuthData(rsUsername, rsAuth);
+          }
+        }
+      } catch (SQLException sql) {
+        throw new RuntimeException(sql);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
     return null;
   }
 
   @Override
   public void deleteAuth(String authToken) throws DataAccessException {
-
+    try (var conn=DatabaseManager.getConnection()) {
+      try (var preparedStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken=?")) {
+        preparedStatement.setString(1, authToken);
+        preparedStatement.executeUpdate();
+      } catch (SQLException ex) {
+        throw new RuntimeException(ex);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   public void deleteAllAuth() {
-
+    try (var conn=DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("TRUNCATE auth")) {
+        preparedStatement.executeUpdate();
+      } catch (SQLException ex) {
+        throw new RuntimeException(ex);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void configureDatabase() {
@@ -55,8 +90,7 @@ public class SqlAuthDAO implements AuthDAO {
               CREATE TABLE IF NOT EXISTS auth (
                 username varchar(126) NOT NULL,
                 authToken varchar(126) NOT NULL,
-                PRIMARY KEY(username),
-                foreign key(username) references user(username)
+                PRIMARY KEY(username)
               )""";
       try (var preparedStatement = conn.prepareStatement(createTable)) {
         preparedStatement.executeUpdate();
