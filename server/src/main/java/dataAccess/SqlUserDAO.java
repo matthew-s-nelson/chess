@@ -79,7 +79,15 @@ public class SqlUserDAO implements UserDAO{
 
   @Override
   public void deleteUsers() {
-
+    try (var conn=DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("TRUNCATE user")) {
+        preparedStatement.executeUpdate();
+      } catch (SQLException ex) {
+        throw new RuntimeException(ex);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void executeUpdate(String statement, Object... params) {
