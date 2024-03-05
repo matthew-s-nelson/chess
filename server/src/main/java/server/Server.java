@@ -17,7 +17,7 @@ public class Server {
     private final ClearService clearService;
 
     public Server() {
-        AuthDAO authDAO = new MemoryAuthDAO();
+        AuthDAO authDAO = new SqlAuthDAO();
         GameDAO gameDAO = new MemoryGameDAO();
         UserDAO userDAO = new SqlUserDAO();
 
