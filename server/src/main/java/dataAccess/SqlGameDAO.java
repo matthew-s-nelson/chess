@@ -80,23 +80,64 @@ public class SqlGameDAO implements GameDAO{
   }
 
   @Override
-  public void insertBlackUsername(int gameID, String username) throws DataAccessException {
+  public void insertBlackUsername(int gameID, String username) {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement = conn.prepareStatement("UPDATE game SET blackUsername=? WHERE gameID=?")) {
+        preparedStatement.setString(1, username);
+        preparedStatement.setInt(2, gameID);
 
+        preparedStatement.executeUpdate();
+      } catch (SQLException sql) {
+        throw new RuntimeException(sql);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
   }
 
   @Override
   public void insertWhiteUsername(int gameID, String username) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement = conn.prepareStatement("UPDATE game SET whiteUsername=? WHERE gameID=?")) {
+        preparedStatement.setString(1, username);
+        preparedStatement.setInt(2, gameID);
 
+        preparedStatement.executeUpdate();
+      } catch (SQLException sql) {
+        throw new RuntimeException(sql);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
   }
 
   @Override
   public void updateGame(int gameID, ChessGame game) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement = conn.prepareStatement("UPDATE game SET board=? WHERE gameID=?")) {
+        preparedStatement.setObject(1, new Gson().toJson(game));
+        preparedStatement.setInt(2, gameID);
 
+        preparedStatement.executeUpdate();
+      } catch (SQLException sql) {
+        throw new RuntimeException(sql);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
   }
 
   @Override
   public void deleteAllGames() {
-
+    try (var conn=DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("TRUNCATE game")) {
+        preparedStatement.executeUpdate();
+      } catch (SQLException ex) {
+        throw new RuntimeException(ex);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void configureDatabase() {
