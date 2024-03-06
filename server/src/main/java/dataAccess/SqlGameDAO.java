@@ -2,8 +2,11 @@ package dataAccess;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
 import com.google.gson.Gson;
+import model.AuthData;
 import model.GameData;
+import model.UserData;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,8 +25,7 @@ public class SqlGameDAO implements GameDAO{
 
   @Override
   public GameData insertGame(String gameName) {
-    ChessBoard board = new ChessBoard();
-    board.resetBoard();
+    ChessGame chessGame = new ChessGame();
     int id;
 
     try (var conn = DatabaseManager.getConnection()) {
@@ -32,7 +34,7 @@ public class SqlGameDAO implements GameDAO{
         preparedStatement.setString(1, gameName);
         preparedStatement.setString(2, null);
         preparedStatement.setString(3, null);
-        preparedStatement.setObject(4, new Gson().toJson(board.getBoard()));
+        preparedStatement.setObject(4, new Gson().toJson(chessGame));
 
         preparedStatement.executeUpdate();
         try (var rs = preparedStatement.getGeneratedKeys()) {
@@ -54,6 +56,26 @@ public class SqlGameDAO implements GameDAO{
 
   @Override
   public GameData selectGame(int gameID) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var preparedStatement=conn.prepareStatement("SELECT * FROM game WHERE gameID=?")) {
+        preparedStatement.setInt(1, gameID);
+        try (var rs=preparedStatement.executeQuery()) {
+          if (rs.next()) {
+            var rsGameID=rs.getInt("gameID");
+            var rsGameName=rs.getString("gameName");
+            var rsWhiteUsername = rs.getString("whiteUsername");
+            var rsBlackUsername = rs.getString("blackUsername");
+            var rsBoard = rs.getString("board");
+
+            return new GameData(rsGameID, rsGameName, rsWhiteUsername, rsBlackUsername, new Gson().fromJson(rsBoard, ChessGame.class));
+          }
+        }
+      } catch (SQLException sql) {
+        throw new RuntimeException(sql);
+      }
+    } catch (DataAccessException | SQLException e) {
+      throw new RuntimeException("DataAccessException");
+    }
     return null;
   }
 
