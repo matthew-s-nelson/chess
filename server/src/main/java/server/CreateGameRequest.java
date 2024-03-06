@@ -1,3 +1,3 @@
 package server;
 
-public record CreateGameRequest(String gamename) { }
+public record CreateGameRequest(String gameName) { }

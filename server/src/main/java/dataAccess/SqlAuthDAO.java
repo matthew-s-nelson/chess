@@ -42,14 +42,14 @@ public class SqlAuthDAO implements AuthDAO {
 
             return new AuthData(rsUsername, rsAuth);
           }
+          throw new DataAccessException("AuthToken doesn't exist");
         }
       } catch (SQLException sql) {
         throw new RuntimeException(sql);
       }
-    } catch (DataAccessException | SQLException e) {
-      throw new RuntimeException("DataAccessException");
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
-    return null;
   }
 
   @Override
@@ -57,11 +57,15 @@ public class SqlAuthDAO implements AuthDAO {
     try (var conn=DatabaseManager.getConnection()) {
       try (var preparedStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken=?")) {
         preparedStatement.setString(1, authToken);
-        preparedStatement.executeUpdate();
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if (rowsAffected == 0) {
+          throw new DataAccessException("AuthToken doesn't exist");
+        }
       } catch (SQLException ex) {
         throw new RuntimeException(ex);
       }
-    } catch (DataAccessException | SQLException e) {
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
@@ -90,7 +94,7 @@ public class SqlAuthDAO implements AuthDAO {
               CREATE TABLE IF NOT EXISTS auth (
                 username varchar(126) NOT NULL,
                 authToken varchar(126) NOT NULL,
-                PRIMARY KEY(username)
+                PRIMARY KEY(authToken)
               )""";
       try (var preparedStatement = conn.prepareStatement(createTable)) {
         preparedStatement.executeUpdate();
