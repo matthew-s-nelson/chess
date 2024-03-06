@@ -98,6 +98,10 @@ public class ChessBoard {
 
     }
 
+    public ChessPiece[][] getBoard() {
+        return board;
+    }
+
     @Override
     public String toString() {
         return "ChessBoard{" +
