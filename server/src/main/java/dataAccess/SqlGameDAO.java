@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import static dataAccess.DatabaseManager.configureDatabase;
+
 public class SqlGameDAO implements GameDAO{
 
   public SqlGameDAO() {
@@ -169,31 +171,6 @@ public class SqlGameDAO implements GameDAO{
       }
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void configureDatabase() {
-    try {
-      DatabaseManager.createDatabase();
-    } catch (DataAccessException e) {
-      throw new RuntimeException("Problem starting the server");
-    }
-    try (var conn = DatabaseManager.getConnection()) {
-      var createTable = """
-              CREATE TABLE IF NOT EXISTS game (
-                gameID int NOT NULL AUTO_INCREMENT,
-                gameName varchar(128) NOT NULL,
-                whiteUsername varchar(128),
-                blackUsername varchar(128),
-                game JSON NOT NULL,
-                PRIMARY KEY(gameID)
-              )""";
-      try (var preparedStatement = conn.prepareStatement(createTable)) {
-        preparedStatement.executeUpdate();
-      }
-
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
     }
   }
 }

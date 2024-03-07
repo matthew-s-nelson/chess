@@ -6,10 +6,13 @@ import model.UserData;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import static dataAccess.DatabaseManager.configureDatabase;
+
 public class SqlAuthDAO implements AuthDAO {
   public SqlAuthDAO() {
     configureDatabase();
   }
+
 
   @Override
   public AuthData createAuth(String username) {
@@ -80,28 +83,6 @@ public class SqlAuthDAO implements AuthDAO {
       }
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void configureDatabase() {
-    try {
-      DatabaseManager.createDatabase();
-    } catch (DataAccessException e) {
-      throw new RuntimeException("Problem starting the server");
-    }
-    try (var conn = DatabaseManager.getConnection()) {
-      var createTable = """
-              CREATE TABLE IF NOT EXISTS auth (
-                username varchar(126) NOT NULL,
-                authToken varchar(126) NOT NULL,
-                PRIMARY KEY(authToken)
-              )""";
-      try (var preparedStatement = conn.prepareStatement(createTable)) {
-        preparedStatement.executeUpdate();
-      }
-
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
     }
   }
 }

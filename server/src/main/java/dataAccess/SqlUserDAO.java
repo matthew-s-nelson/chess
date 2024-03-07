@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+import static dataAccess.DatabaseManager.configureDatabase;
+
 public class SqlUserDAO implements UserDAO{
 
   public SqlUserDAO() {
@@ -94,29 +96,6 @@ public class SqlUserDAO implements UserDAO{
       }
     } catch (DataAccessException | SQLException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void configureDatabase() {
-    try {
-      DatabaseManager.createDatabase();
-    } catch (DataAccessException e) {
-      throw new RuntimeException("Problem starting the server");
-    }
-    try (var conn = DatabaseManager.getConnection()) {
-      var createTable = """
-          CREATE TABLE IF NOT EXISTS user (
-            username varchar(126) NOT NULL,
-            password varchar(126) NOT NULL,
-            email varchar(126) NOT NULL,
-            PRIMARY KEY(username)
-          )""";
-      try (var preparedStatement = conn.prepareStatement(createTable)) {
-        preparedStatement.executeUpdate();
-      }
-
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
     }
   }
 }

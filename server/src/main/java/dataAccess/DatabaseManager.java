@@ -1,6 +1,8 @@
 package dataAccess;
 
 import java.sql.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -43,6 +45,51 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public static void configureDatabase() {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Problem starting the server");
+        }
+        try (var conn = DatabaseManager.getConnection()) {
+            Collection<String> createStatements = new HashSet<>();
+            var createGameTable = """
+              CREATE TABLE IF NOT EXISTS game (
+                gameID int NOT NULL AUTO_INCREMENT,
+                gameName varchar(128) NOT NULL,
+                whiteUsername varchar(128),
+                blackUsername varchar(128),
+                game JSON NOT NULL,
+                PRIMARY KEY(gameID)
+              )""";
+            createStatements.add(createGameTable);
+            var createAuthTable = """
+              CREATE TABLE IF NOT EXISTS auth (
+                username varchar(126) NOT NULL,
+                authToken varchar(126) NOT NULL,
+                PRIMARY KEY(authToken)
+              )""";
+            createStatements.add(createAuthTable);
+            var createUserTable = """
+              CREATE TABLE IF NOT EXISTS user (
+                username varchar(126) NOT NULL,
+                password varchar(126) NOT NULL,
+                email varchar(126) NOT NULL,
+                PRIMARY KEY(username)
+              )""";
+            createStatements.add(createUserTable);
+
+            for (String createTable : createStatements) {
+                try (var preparedStatement=conn.prepareStatement(createTable)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
