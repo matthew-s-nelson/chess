@@ -147,11 +147,14 @@ public class SqlGameDAO implements GameDAO{
         preparedStatement.setObject(1, new Gson().toJson(game));
         preparedStatement.setInt(2, gameID);
 
-        preparedStatement.executeUpdate();
+        int rowsAffected = preparedStatement.executeUpdate();
+        if (rowsAffected == 0) {
+          throw new DataAccessException("No game exists with this ID;");
+        }
       } catch (SQLException sql) {
         throw new RuntimeException(sql);
       }
-    } catch (DataAccessException | SQLException e) {
+    } catch (SQLException e) {
       throw new RuntimeException("DataAccessException");
     }
   }
@@ -179,7 +182,7 @@ public class SqlGameDAO implements GameDAO{
       var createTable = """
               CREATE TABLE IF NOT EXISTS game (
                 gameID int NOT NULL AUTO_INCREMENT,
-                gameName varchar(128),
+                gameName varchar(128) NOT NULL,
                 whiteUsername varchar(128),
                 blackUsername varchar(128),
                 game JSON NOT NULL,
