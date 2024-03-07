@@ -68,7 +68,7 @@ public class SqlUserDAO implements UserDAO{
             var rsEmail=rs.getString("email");
 
             if (PasswordHasher.comparePassword(password, rsPassword)) {
-              return new UserData(rsUsername, rsPassword, rsEmail);
+              return new UserData(rsUsername, password, rsEmail);
             } else {
               throw new DataAccessException("Incorrect Password");
             }
@@ -96,24 +96,6 @@ public class SqlUserDAO implements UserDAO{
       throw new RuntimeException(e);
     }
   }
-
-  private void executeUpdate(String statement, Object... params) {
-    try (var conn = DatabaseManager.getConnection()) {
-      try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-        for (var i = 0; i < params.length; i++) {
-          var param = params[i];
-          if (param instanceof String p){
-            ps.setString(i + 1, p);
-          }
-        }
-        ps.executeUpdate();
-      }
-    } catch (SQLException | DataAccessException e) {
-
-    }
-  }
-
-
 
   private void configureDatabase() {
     try {
