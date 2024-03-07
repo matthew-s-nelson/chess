@@ -1,6 +1,7 @@
 package dataAccessTests;
 
 import dataAccess.*;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,5 +81,65 @@ public class daoTests {
   }
 
   @Test
-  public void testCreateAuth()
+  public void testCreateAuthGood() {
+    AuthData result = authDAO.createAuth("TestUsername");
+
+    Assertions.assertEquals("TestUsername", result.username());
+    Assertions.assertNotNull(result.authToken());
+
+  }
+
+  @Test
+  public void testCreateAuthBad() {
+    Assertions.assertThrows(RuntimeException.class, () -> {
+      authDAO.createAuth(null);
+    });
+  }
+
+  @Test
+  public void testGetAuthGood() {
+    AuthData expected = authDAO.createAuth("TestUsername");
+    try {
+      AuthData result = authDAO.getAuth(expected.authToken());
+      Assertions.assertEquals(expected, result);
+    } catch (DataAccessException e) {
+      Assertions.fail();
+    }
+  }
+
+  @Test
+  public void testGetAuthBad() {
+    AuthData expected = authDAO.createAuth("TestUsername");
+    Assertions.assertThrows(DataAccessException.class, () -> {
+      AuthData result = authDAO.getAuth("not valid auth");
+    });
+  }
+
+  @Test
+  public void deleteAuthGood() {
+    AuthData auth = authDAO.createAuth("TestUsername");
+    Assertions.assertDoesNotThrow(() -> {
+      authDAO.deleteAuth(auth.authToken());
+    });
+  }
+
+  @Test
+  public void deleteAuthBad() {
+    Assertions.assertThrows(DataAccessException.class, () -> {
+      authDAO.deleteAuth("Auth that doesn't exist");
+    });
+  }
+
+  @Test
+  public void deleteAllAuthGood() {
+    authDAO.createAuth("TestUsername");
+    Assertions.assertDoesNotThrow(() -> {
+      authDAO.deleteAllAuth();
+    });
+  }
+
+  @Test
+  public void insertGame() {
+
+  }
 }
