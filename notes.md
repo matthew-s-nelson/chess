@@ -800,3 +800,13 @@ try(Connection c = DriverManager.getConection(conecctionURL)) {  // Try with res
 ```
 SELECT COUNT(*) AS count FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ? (returns 1 if db already exists and 0 if it doesn't)
 in DAO's put an if statement, and only create the DB if it isn't already created.
+
+# Terminal control codes
+Draw chess board (pass in multi-dim array of chess board)
+Draw Header (for black or white (param))
+Draw row (x8) (Access chess piece from matrix at that pos.)
+  Draw left header
+  Draw squares (first square white or black?)
+    Draw square
+  Draw right header
+Draw footer
