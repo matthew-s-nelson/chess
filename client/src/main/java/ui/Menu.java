@@ -17,17 +17,22 @@ public class Menu {
     out.print(SET_TEXT_BOLD);
     out.print("WELCOME TO CHESS!\n");
     out.println(RESET_TEXT_BOLD_FAINT);
-    while (!Objects.equals(line, "quit")) {
-      Scanner scanner = new Scanner(System.in);
-      switch (menuNum) {
-        case 1:
-          startUpMenu(out, scanner);
-      }
-//      System.out.printf("Type your numbers%n>>> ");
 
-      line = scanner.nextLine();
-      System.out.println(line);
-    }
+    ChessBoard chessBoard = new ChessBoard();
+    chessBoard.drawBoard();
+
+
+//    while (!Objects.equals(line, "quit")) {
+//      Scanner scanner = new Scanner(System.in);
+//      switch (menuNum) {
+//        case 1:
+//          startUpMenu(out, scanner);
+//      }
+////      System.out.printf("Type your numbers%n>>> ");
+//
+//      line = scanner.nextLine();
+//      System.out.println(line);
+//    }
     System.out.println("Goodbye!");
   }
 
