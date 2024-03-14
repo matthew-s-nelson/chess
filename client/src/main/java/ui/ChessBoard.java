@@ -52,12 +52,16 @@ public class ChessBoard {
   }
 
   public void drawRows(PrintStream out, int color) {
-    for (int i = 1; i < 9; i++) {
+    int[] startEnd = this.setStartAndEnd(color);
+    int row = startEnd[0];
+    int end = startEnd[1];
+    while (row != end) {
       out.print(SET_BG_COLOR_BLACK);
-      drawSideHeader(out, i);
-      drawRowSquares(out, i, color);
-      drawSideHeader(out, i);
+      drawSideHeader(out, row);
+      drawRowSquares(out, row, color);
+      drawSideHeader(out, row);
       out.println(RESET_BG_COLOR);
+      row = incrementOrDecrement(color, row);
     }
   }
 
@@ -87,11 +91,7 @@ public class ChessBoard {
       out.print(BORDER_SPACE);
       drawChessPiece(out, rowNum, col);
       out.print(BORDER_SPACE);
-      if (color == 1) {
-        col++;
-      } else {
-        col--;
-      }
+      col = this.incrementOrDecrement(color, col);
     }
     out.print(RESET_BG_COLOR);
   }
@@ -143,5 +143,28 @@ public class ChessBoard {
         out.print(SET_TEXT_COLOR_BLUE);
         break;
     }
+  }
+
+  public int[] setStartAndEnd(int i) {
+    int start;
+    int end;
+    if (i == 1) {
+      start = 1;
+      end = 9;
+    } else {
+      start = 8;
+      end = 0;
+    }
+    int[] result = {start, end};
+    return result;
+  }
+
+  public int incrementOrDecrement(int i, int currentNum) {
+    if (i == 1) {
+      currentNum++;
+    } else {
+      currentNum--;
+    }
+    return currentNum;
   }
 }
