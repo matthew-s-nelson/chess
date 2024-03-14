@@ -69,15 +69,29 @@ public class ChessBoard {
   }
 
   public void drawRowSquares(PrintStream out, int rowNum, int color) {
-    for (int i = 1; i < 9; i++) {
-      if ((i + rowNum) % 2 == color) {
+    int col;
+    int end;
+    if (color == 1) {
+      col = 1;
+      end = 9;
+    } else {
+      col = 8;
+      end = 0;
+    }
+    while (col != end) {
+      if ((col + rowNum) % 2 == 1) {
         out.print(SET_BG_COLOR_WHITE);
       } else {
         out.print(SET_BG_COLOR_DARK_GREY);
       }
       out.print(BORDER_SPACE);
-      drawChessPiece(out, rowNum, i);
+      drawChessPiece(out, rowNum, col);
       out.print(BORDER_SPACE);
+      if (color == 1) {
+        col++;
+      } else {
+        col--;
+      }
     }
     out.print(RESET_BG_COLOR);
   }
