@@ -810,3 +810,11 @@ Draw row (x8) (Access chess piece from matrix at that pos.)
     Draw square
   Draw right header
 Draw footer
+
+Set a read timeout on your connection (5000 milliseconds), otherwise it will be trying to make a connection forever.
+
+.getInputStream() is how you get the response from the server.
+
+ServerFacade has login, createGame, register, etc. method.
+
+Client Communicator class (add it) with get, post, delete method that accepts parameters, and call those methods from server facade.

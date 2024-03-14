@@ -19,17 +19,28 @@ public class ChessBoard {
     board.resetBoard();
   }
 
+  // color key: 0 = white, 1 = black
   public void drawBoard() {
     var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    drawHeader(out);
-    drawRows(out);
-    drawHeader(out);
+    drawHeader(out, 0);
+    drawRows(out, 0);
+    drawHeader(out, 0);
+
+    out.println();
+    drawHeader(out, 1);
+    drawRows(out, 1);
+    drawHeader(out, 1);
   }
 
-  public void drawHeader(PrintStream out) {
+  public void drawHeader(PrintStream out, int color) {
     out.print(SET_BG_COLOR_BLACK);
     out.print(SET_TEXT_COLOR_WHITE);
-    String[] headers = { "A", "B", "C", "D", "E", "F", "G", "H" };
+    String[] headers;
+    if (color == 0) {
+      headers =new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
+    } else {
+      headers =new String[]{"H", "G", "F", "E", "D", "C", "B", "A"};
+    }
     out.print(EMPTY_SQUARE);
     for (String header : headers) {
       out.print(BORDER_SPACE);
@@ -40,11 +51,11 @@ public class ChessBoard {
     out.println(RESET_BG_COLOR);
   }
 
-  public void drawRows(PrintStream out) {
+  public void drawRows(PrintStream out, int color) {
     for (int i = 1; i < 9; i++) {
       out.print(SET_BG_COLOR_BLACK);
       drawSideHeader(out, i);
-      drawRowSquares(out, i);
+      drawRowSquares(out, i, color);
       drawSideHeader(out, i);
       out.println(RESET_BG_COLOR);
     }
@@ -57,9 +68,9 @@ public class ChessBoard {
     out.print(BORDER_SPACE);
   }
 
-  public void drawRowSquares(PrintStream out, int rowNum) {
+  public void drawRowSquares(PrintStream out, int rowNum, int color) {
     for (int i = 1; i < 9; i++) {
-      if (i % 2 == rowNum % 2) {
+      if ((i + rowNum) % 2 == color) {
         out.print(SET_BG_COLOR_WHITE);
       } else {
         out.print(SET_BG_COLOR_DARK_GREY);
