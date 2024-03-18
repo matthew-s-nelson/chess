@@ -47,7 +47,8 @@ public class Menu {
         return 2;
       case 2:
         out.println("Register");
-        break;
+        registerScreen(out, scanner);
+        return 2;
       case 3:
         help(out);
         break;
@@ -80,6 +81,7 @@ public class Menu {
   public int loggedInMenu(PrintStream out, Scanner scanner) {
     printLoggedInMenu(out);
     int response = scanner.nextInt();
+    int gameID;
     switch (response) {
       case 1:
         help(out);
@@ -89,6 +91,14 @@ public class Menu {
         return 1;
       case 3:
         createGameScreen(out, scanner);
+        break;
+      case 4:
+        break;
+      case 5:
+        gameID = joinGameScreen(out, scanner);
+        break;
+      case 6:
+        gameID = joinGameScreen(out, scanner);
         break;
     }
     return 3;
@@ -107,6 +117,21 @@ public class Menu {
   public void createGameScreen(PrintStream out, Scanner scanner) {
     out.println("Game name: ");
     String gameName = scanner.next();
+  }
+
+  public void registerScreen(PrintStream out, Scanner scanner) {
+    out.print("Username: ");
+    String username = scanner.next();
+    out.print("Password: ");
+    String password = scanner.next();
+    out.print("Email: ");
+    String email = scanner.next();
+  }
+
+  public int joinGameScreen(PrintStream out, Scanner scanner) {
+    out.println("What is the gameID of the game you would like to join?");
+    int gameID = scanner.nextInt();
+    return gameID;
   }
 
   public void help(PrintStream out) {
