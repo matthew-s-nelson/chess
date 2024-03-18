@@ -18,44 +18,45 @@ public class Menu {
     out.print("WELCOME TO CHESS!\n");
     out.println(RESET_TEXT_BOLD_FAINT);
 
-    ChessBoard chessBoard = new ChessBoard();
-    chessBoard.drawBoard();
 
 
-//    while (!Objects.equals(line, "quit")) {
-//      Scanner scanner = new Scanner(System.in);
-//      switch (menuNum) {
-//        case 1:
-//          startUpMenu(out, scanner);
-//      }
-////      System.out.printf("Type your numbers%n>>> ");
-//
+    while (!Objects.equals(line, "quit")) {
+      Scanner scanner = new Scanner(System.in);
+      switch (menuNum) {
+        case 1:
+          menuNum = startUpMenu(out, scanner);
+        case 2:
+          menuNum = loginScreen(out, scanner);
+        case 3:
+          menuNum = loggedInMenu(out, scanner);
+      }
+//      System.out.printf("Type your numbers%n>>> ");
+
 //      line = scanner.nextLine();
 //      System.out.println(line);
-//    }
+    }
     System.out.println("Goodbye!");
   }
 
-  public void startUpMenu(PrintStream out, Scanner scanner) {
+  public int startUpMenu(PrintStream out, Scanner scanner) {
     printStartUpMenu(out);
     int response = scanner.nextInt();
     switch (response) {
       case 1:
         out.println("Login");
-        break;
+        return 2;
       case 2:
         out.println("Register");
         break;
       case 3:
-        out.print(SET_TEXT_ITALIC);
-        out.println("Type the number of the option you would like to select and hit 'enter'");
-        out.print(RESET_TEXT_ITALIC);
+        help(out);
         break;
       case 4:
         out.print("Goodbye!");
         System.exit(200);
         break;
     }
+    return 1;
   }
 
   public void printStartUpMenu(PrintStream out) {
@@ -64,5 +65,53 @@ public class Menu {
       out.println("  2. Register");
       out.println("  3. Help");
       out.println("  4. Quit");
+  }
+
+  public int loginScreen(PrintStream out, Scanner scanner) {
+    out.println("Username:");
+    String username = scanner.next();
+    out.println("Password:");
+    String password = scanner.next();
+    out.println(username);
+    out.println(password);
+    return 3;
+  }
+
+  public int loggedInMenu(PrintStream out, Scanner scanner) {
+    printLoggedInMenu(out);
+    int response = scanner.nextInt();
+    switch (response) {
+      case 1:
+        help(out);
+        break;
+      case 2:
+        out.println("Logging out");
+        return 1;
+      case 3:
+        createGameScreen(out, scanner);
+        break;
+    }
+    return 3;
+  }
+
+  public void printLoggedInMenu(PrintStream out) {
+    out.println("What would you like to do?");
+    out.println("  1. Help");
+    out.println("  2. Logout");
+    out.println("  3. Create Game");
+    out.println("  4. List Games");
+    out.println("  5. Join Game");
+    out.println("  6. Join Game As Observer");
+  }
+
+  public void createGameScreen(PrintStream out, Scanner scanner) {
+    out.println("Game name: ");
+    String gameName = scanner.next();
+  }
+
+  public void help(PrintStream out) {
+    out.print(SET_TEXT_ITALIC);
+    out.println("Type the number of the option you would like to select and hit 'enter'");
+    out.print(RESET_TEXT_ITALIC);
   }
 }
