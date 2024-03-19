@@ -68,6 +68,12 @@
             <artifactId>surefire-logger-api</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>edu.byu.cs240</groupId>
+            <artifactId>server</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

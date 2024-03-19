@@ -8,17 +8,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerFacade {
   private String authToken;
-  private final String baseURL = "http://localhost:8080/";
+  private final String baseURL;
   int port;
 
   public ServerFacade(int port) {
     this.port = port;
+    baseURL = "http://localhost:" + port + "/";
   }
 
   public void doGet(String urlString) throws IOException {
@@ -107,6 +109,25 @@ public class ServerFacade {
     Map<String, String> response = doPost(url, body);
     AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
     return authData;
+  }
+
+  public void clear() throws IOException {
+    String fullUrl = baseURL + "db";
+
+    URL url = new URL(fullUrl);
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+    connection.setReadTimeout(5000);
+    connection.setRequestMethod("DELETE");
+    connection.setDoOutput(true);
+
+    // Set HTTP request headers, if necessary
+    if (authToken != null) {
+      connection.addRequestProperty("authorization", authToken);
+    }
+
+    connection.connect();
 
   }
 }

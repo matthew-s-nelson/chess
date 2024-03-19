@@ -40,15 +40,13 @@ public class DatabaseManager {
         try {
 //            mysql:mysql-connector-java:8.0.30
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
-        } catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
         }
     }
 
