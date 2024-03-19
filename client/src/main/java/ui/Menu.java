@@ -1,5 +1,6 @@
 package ui;
 
+import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
 import java.io.IOException;
@@ -136,6 +137,8 @@ public class Menu {
       out.print(serverFacade.register(username, password, email));
     } catch (IOException e) {
       out.print(e);
+    } catch (ResponseException res) {
+      out.print(res.getMessage());
     }
   }
 

@@ -99,7 +99,7 @@ public class ServerFacade {
     }
   }
 
-  public AuthData register(String username, String password, String email) throws IOException {
+  public AuthData register(String username, String password, String email) throws IOException, ResponseException {
     Map<String, String> body = new HashMap<>();
     body.put("username", username);
     body.put("password", password);
@@ -107,8 +107,12 @@ public class ServerFacade {
 
     String url = baseURL + "user";
     Map<String, String> response = doPost(url, body);
-    AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
-    return authData;
+    if (response != null) {
+      AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
+      return authData;
+    } else {
+      throw new ResponseException("Username taken");
+    }
   }
 
   public void clear() throws IOException {
