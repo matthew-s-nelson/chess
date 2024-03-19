@@ -1,5 +1,8 @@
 package ui;
 
+import serverfacade.ServerFacade;
+
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -7,7 +10,10 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class Menu {
-  public Menu() {}
+  private ServerFacade serverFacade;
+  public Menu(ServerFacade serverFacade) {
+    this.serverFacade = serverFacade;
+  }
 
   public void run() {
     String line = "";
@@ -126,6 +132,11 @@ public class Menu {
     String password = scanner.next();
     out.print("Email: ");
     String email = scanner.next();
+    try {
+      out.print(serverFacade.register(username, password, email));
+    } catch (IOException e) {
+      out.print(e);
+    }
   }
 
   public int joinGameScreen(PrintStream out, Scanner scanner) {

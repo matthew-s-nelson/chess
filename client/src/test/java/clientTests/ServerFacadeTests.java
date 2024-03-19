@@ -6,7 +6,6 @@ import serverfacade.ServerFacade;
 
 
 public class ServerFacadeTests {
-
     private static Server server;
     static ServerFacade facade;
 
@@ -27,7 +26,7 @@ public class ServerFacadeTests {
     @Test
     void register() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
-        assertTrue(authData.authToken().length() > 10);
+        Assertions.assertTrue(authData.authToken().length() > 10);
     }
 
 }

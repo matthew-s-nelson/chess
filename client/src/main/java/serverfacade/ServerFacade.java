@@ -1,6 +1,7 @@
 package serverfacade;
 
 import com.google.gson.Gson;
+import model.AuthData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class ServerFacade {
     }
   }
 
-  public void doPost(String urlString, Map<String, String> body) throws IOException {
+  public Map<String, String> doPost(String urlString, Map<String, String> body) throws IOException {
     URL url = new URL(urlString);
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -84,7 +85,7 @@ public class ServerFacade {
 //      InputStream responseBody = connection.getInputStream();
       try (InputStream responseBody = connection.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        System.out.println(new Gson().fromJson(inputStreamReader, Map.class));
+        return new Gson().fromJson(inputStreamReader, Map.class);
       }
     }
     else {
@@ -92,18 +93,20 @@ public class ServerFacade {
 
       InputStream responseBody = connection.getErrorStream();
       // Read and process error response body from InputStream ...
+      return null;
     }
   }
 
-  public Object register(String username, String password, String email) throws IOException {
+  public AuthData register(String username, String password, String email) throws IOException {
     Map<String, String> body = new HashMap<>();
     body.put("username", username);
     body.put("password", password);
     body.put("email", email);
 
     String url = baseURL + "user";
-
-    doPost(url, body);
+    Map<String, String> response = doPost(url, body);
+    AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
+    return authData;
 
   }
 }

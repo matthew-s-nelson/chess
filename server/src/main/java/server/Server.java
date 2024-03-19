@@ -148,7 +148,7 @@ public class Server {
         return new Gson().toJson(null);
     }
 
-    public static void main(String[] args) {
-        new Server().run(8080);
-    }
+//    public static void main(String[] args) {
+//        new Server().run(8080);
+//    }
 }
