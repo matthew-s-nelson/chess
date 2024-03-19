@@ -99,6 +99,50 @@ public class ServerFacade {
     }
   }
 
+  public Map<String, String> doDelete(String urlString, Map<String, String> body) throws IOException {
+    URL url = new URL(urlString);
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+    connection.setReadTimeout(5000);
+    connection.setRequestMethod("POST");
+    connection.setDoOutput(true);
+
+    // Set HTTP request headers, if necessary
+    if (authToken != null) {
+      connection.addRequestProperty("authorization", authToken);
+    }
+
+    connection.connect();
+
+    try (OutputStream requestBody = connection.getOutputStream()) {
+      var jsonBody = new Gson().toJson(body);
+      requestBody.write(jsonBody.getBytes());
+    }
+
+    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+      // Get HTTP response headers, if necessary
+      // Map<String, List<String>> headers = connection.getHeaderFields();
+
+      // OR
+
+      //connection.getHeaderField("Content-Length");
+
+//      InputStream responseBody = connection.getInputStream();
+      try (InputStream responseBody = connection.getInputStream()) {
+        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
+        return new Gson().fromJson(inputStreamReader, Map.class);
+      }
+    }
+    else {
+      // SERVER RETURNED AN HTTP ERROR
+
+      InputStream responseBody = connection.getErrorStream();
+      // Read and process error response body from InputStream ...
+      return null;
+    }
+  }
+
   public AuthData register(String username, String password, String email) throws IOException, ResponseException {
     Map<String, String> body = new HashMap<>();
     body.put("username", username);
@@ -113,25 +157,5 @@ public class ServerFacade {
     } else {
       throw new ResponseException("Username taken");
     }
-  }
-
-  public void clear() throws IOException {
-    String fullUrl = baseURL + "db";
-
-    URL url = new URL(fullUrl);
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-    connection.setReadTimeout(5000);
-    connection.setRequestMethod("DELETE");
-    connection.setDoOutput(true);
-
-    // Set HTTP request headers, if necessary
-    if (authToken != null) {
-      connection.addRequestProperty("authorization", authToken);
-    }
-
-    connection.connect();
-
   }
 }

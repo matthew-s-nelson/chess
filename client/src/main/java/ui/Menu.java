@@ -28,14 +28,18 @@ public class Menu {
 
 
     while (!Objects.equals(line, "quit")) {
+      out.print(SET_TEXT_COLOR_WHITE);
       Scanner scanner = new Scanner(System.in);
       switch (menuNum) {
         case 1:
           menuNum = startUpMenu(out, scanner);
+          break;
         case 2:
           menuNum = loginScreen(out, scanner);
+          break;
         case 3:
           menuNum = loggedInMenu(out, scanner);
+          break;
       }
 //      System.out.printf("Type your numbers%n>>> ");
 
@@ -54,8 +58,11 @@ public class Menu {
         return 2;
       case 2:
         out.println("Register");
-        registerScreen(out, scanner);
-        return 2;
+        boolean loggedIn = registerScreen(out, scanner);
+        if (loggedIn) {
+          return 2;
+        }
+        return 1;
       case 3:
         help(out);
         break;
@@ -126,7 +133,8 @@ public class Menu {
     String gameName = scanner.next();
   }
 
-  public void registerScreen(PrintStream out, Scanner scanner) {
+  public boolean registerScreen(PrintStream out, Scanner scanner) {
+    boolean loggedIn = false;
     out.print("Username: ");
     String username = scanner.next();
     out.print("Password: ");
@@ -135,11 +143,13 @@ public class Menu {
     String email = scanner.next();
     try {
       out.print(serverFacade.register(username, password, email));
+      loggedIn = true;
     } catch (IOException e) {
-      out.print(e);
+      printError(out, e);
     } catch (ResponseException res) {
-      out.print(res.getMessage());
+      printError(out, res);
     }
+    return loggedIn;
   }
 
   public int joinGameScreen(PrintStream out, Scanner scanner) {
@@ -152,5 +162,13 @@ public class Menu {
     out.print(SET_TEXT_ITALIC);
     out.println("Type the number of the option you would like to select and hit 'enter'");
     out.print(RESET_TEXT_ITALIC);
+  }
+
+  public void printError(PrintStream out, Exception e) {
+    out.print(SET_TEXT_BOLD);
+    out.print(SET_TEXT_COLOR_RED);
+    out.println(e.getMessage());
+    out.print(RESET_TEXT_BOLD_FAINT);
+    out.print(SET_TEXT_COLOR_WHITE);
   }
 }

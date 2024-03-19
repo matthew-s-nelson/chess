@@ -818,3 +818,5 @@ Set a read timeout on your connection (5000 milliseconds), otherwise it will be 
 serverfacade.ServerFacade has login, createGame, register, etc. method.
 
 Client Communicator class (add it) with get, post, delete method that accepts parameters, and call those methods from server facade.
+
+# WebSocket
