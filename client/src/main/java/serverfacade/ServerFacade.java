@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class ServerFacade {
     baseURL = "http://localhost:" + port + "/";
   }
 
-  public void doGet(String urlString) throws IOException {
+  public Object doGet(String urlString) throws IOException {
     URL url = new URL(urlString);
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -46,7 +48,10 @@ public class ServerFacade {
 
       //connection.getHeaderField("Content-Length");
 
-      InputStream responseBody = connection.getInputStream();
+      try (InputStream responseBody = connection.getInputStream()) {
+        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
+        return new Gson().fromJson(inputStreamReader, Map.class);
+      }
       // Read and process response body from InputStream ...
     } else {
       // SERVER RETURNED AN HTTP ERROR
@@ -54,6 +59,7 @@ public class ServerFacade {
       InputStream responseBody = connection.getErrorStream();
       // Read and process error response body from InputStream ...
     }
+    return null;
   }
 
   public Map<String, String> doPost(String urlString, Map<String, String> body) throws IOException {
@@ -200,5 +206,14 @@ public class ServerFacade {
     } else {
       throw new ResponseException("GameName already taken");
     }
+  }
+
+  public Collection<GameData> listGames() throws IOException, ResponseException {
+    String url = baseURL + "game";
+    Object response = doGet(url);
+    if (response instanceof Map<?,?> && ((Map<?, ?>) response).get("games") instanceof ArrayList) {
+      Object gameData = ((Map<?, ?>) response).get("games");
+    }
+    return null;
   }
 }

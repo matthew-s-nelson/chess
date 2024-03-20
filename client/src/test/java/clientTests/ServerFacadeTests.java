@@ -91,4 +91,11 @@ public class ServerFacadeTests {
             facade.createGame("test");
         });
     }
+
+    @Test
+    void listGamesGood() throws Exception {
+        facade.register("player1", "password", "hi");
+        facade.createGame("test");
+        facade.listGames();
+    }
 }
