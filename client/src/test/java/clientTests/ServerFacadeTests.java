@@ -108,4 +108,11 @@ public class ServerFacadeTests {
         Collection<GameData> result = facade.listGames();
         Assertions.assertEquals(expected, result);
     }
+
+    @Test
+    void listGamesBad() throws Exception {
+        Assertions.assertThrows(ResponseException.class, ()-> {
+            facade.listGames();
+        });
+    }
 }

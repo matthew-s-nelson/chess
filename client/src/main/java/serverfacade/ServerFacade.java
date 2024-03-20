@@ -218,9 +218,7 @@ public class ServerFacade {
       for (Object game: gamesData) {
         if (game instanceof Map<?,?>) {
           int gameID = 0;
-          if (((Map<?, ?>) game).get("gameID") instanceof Double) {
-            gameID = ((Double) ((Map<?, ?>) game).get("gameID")).intValue();
-          }
+          gameID = ((Double) ((Map<?, ?>) game).get("gameID")).intValue();
           String gameName = (String) ((Map<?, ?>) game).get("gameName");
           String whiteUsername = (String) ((Map<?, ?>) game).get("whiteUsername");
           String blackUsername = (String) ((Map<?, ?>) game).get("blackUsername");
@@ -230,6 +228,6 @@ public class ServerFacade {
       }
       return gameDataCollection;
     }
-    return null;
+    throw new ResponseException("Unauthorized");
   }
 }
