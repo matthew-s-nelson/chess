@@ -85,4 +85,11 @@ public class ServerFacadeTests {
         Assertions.assertEquals(expected, result);
     }
 
+    @Test
+    void createGameBad() throws Exception {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.createGame("test");
+        });
+    }
+
 }
