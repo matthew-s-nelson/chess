@@ -8,6 +8,8 @@ import serverfacade.ServerFacade;
 import spark.utils.Assert;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public class ServerFacadeTests {
@@ -95,7 +97,15 @@ public class ServerFacadeTests {
     @Test
     void listGamesGood() throws Exception {
         facade.register("player1", "password", "hi");
+        Collection<GameData> expected = new ArrayList<>();
+
         facade.createGame("test");
-        facade.listGames();
+        expected.add(new GameData(1, null, null, "test", null));
+
+        facade.createGame("test2");
+        expected.add(new GameData(2, null, null, "test2", null));
+
+        Collection<GameData> result = facade.listGames();
+        Assertions.assertEquals(expected, result);
     }
 }

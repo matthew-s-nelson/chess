@@ -1,5 +1,6 @@
 package serverfacade;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -211,8 +212,23 @@ public class ServerFacade {
   public Collection<GameData> listGames() throws IOException, ResponseException {
     String url = baseURL + "game";
     Object response = doGet(url);
+    Collection<GameData> gameDataCollection = new ArrayList<>();
     if (response instanceof Map<?,?> && ((Map<?, ?>) response).get("games") instanceof ArrayList) {
-      Object gameData = ((Map<?, ?>) response).get("games");
+      ArrayList gamesData = ((Map<?, ArrayList>) response).get("games");
+      for (Object game: gamesData) {
+        if (game instanceof Map<?,?>) {
+          int gameID = 0;
+          if (((Map<?, ?>) game).get("gameID") instanceof Double) {
+            gameID = ((Double) ((Map<?, ?>) game).get("gameID")).intValue();
+          }
+          String gameName = (String) ((Map<?, ?>) game).get("gameName");
+          String whiteUsername = (String) ((Map<?, ?>) game).get("whiteUsername");
+          String blackUsername = (String) ((Map<?, ?>) game).get("blackUsername");
+          GameData gameData = new GameData(gameID, whiteUsername, blackUsername, gameName, null);
+          gameDataCollection.add(gameData);
+        }
+      }
+      return gameDataCollection;
     }
     return null;
   }
