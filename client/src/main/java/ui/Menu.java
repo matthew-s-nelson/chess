@@ -1,5 +1,6 @@
 package ui;
 
+import model.GameData;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 
@@ -117,7 +118,7 @@ public class Menu {
         return 1;
       case 3:
         createGameScreen(out, scanner);
-        break;
+        return 2;
       case 4:
         break;
       case 5:
@@ -143,6 +144,13 @@ public class Menu {
   public void createGameScreen(PrintStream out, Scanner scanner) {
     out.println("Game name: ");
     String gameName = scanner.next();
+    try {
+      GameData gameData = serverFacade.createGame(gameName);
+      out.print("Game created with gameID ");
+      out.println(gameData.gameID());
+    } catch (IOException | ResponseException res) {
+      printError(out, res);
+    }
   }
 
   public boolean registerScreen(PrintStream out, Scanner scanner) {

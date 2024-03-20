@@ -91,5 +91,4 @@ public class ServerFacadeTests {
             facade.createGame("test");
         });
     }
-
 }
