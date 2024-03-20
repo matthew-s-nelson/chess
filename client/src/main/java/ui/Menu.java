@@ -35,9 +35,6 @@ public class Menu {
           menuNum = startUpMenu(out, scanner);
           break;
         case 2:
-          menuNum = loginScreen(out, scanner);
-          break;
-        case 3:
           menuNum = loggedInMenu(out, scanner);
           break;
       }
@@ -55,11 +52,15 @@ public class Menu {
     switch (response) {
       case 1:
         out.println("Login");
-        return 2;
+        boolean loggedIn = loginScreen(out, scanner);
+        if (loggedIn) {
+          return 2;
+        }
+        return 1;
       case 2:
         out.println("Register");
-        boolean loggedIn = registerScreen(out, scanner);
-        if (loggedIn) {
+        boolean registered = registerScreen(out, scanner);
+        if (registered) {
           return 2;
         }
         return 1;
@@ -82,14 +83,20 @@ public class Menu {
       out.println("  4. Quit");
   }
 
-  public int loginScreen(PrintStream out, Scanner scanner) {
+  public boolean loginScreen(PrintStream out, Scanner scanner) {
     out.println("Username:");
     String username = scanner.next();
     out.println("Password:");
     String password = scanner.next();
     out.println(username);
     out.println(password);
-    return 3;
+    try {
+      serverFacade.login(username, password);
+      return true;
+    } catch (ResponseException | IOException res) {
+      printError(out, res);
+    }
+    return false;
   }
 
   public int loggedInMenu(PrintStream out, Scanner scanner) {
@@ -102,6 +109,11 @@ public class Menu {
         break;
       case 2:
         out.println("Logging out");
+        try{
+          serverFacade.logout();
+        } catch (ResponseException | IOException res) {
+          printError(out, res);
+        }
         return 1;
       case 3:
         createGameScreen(out, scanner);
@@ -142,8 +154,8 @@ public class Menu {
     out.print("Email: ");
     String email = scanner.next();
     try {
-      out.print(serverFacade.register(username, password, email));
-      loggedIn = true;
+      serverFacade.register(username, password, email);
+      return true;
     } catch (IOException e) {
       printError(out, e);
     } catch (ResponseException res) {

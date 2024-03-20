@@ -14,6 +14,10 @@ public record GameData (int gameID, String whiteUsername, String blackUsername, 
     this(gameID, null, null, gameName, null);
   }
 
+  public GameData(String gameID, String gameName) {
+    this(Integer.parseInt(gameID), gameName);
+  }
+
   public GameData updateWhiteUsername(String newWhiteName) {
     return new GameData(gameID, newWhiteName, blackUsername, gameName, game);
   }

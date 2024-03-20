@@ -2,6 +2,7 @@ package serverfacade;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,13 +100,13 @@ public class ServerFacade {
     }
   }
 
-  public Map<String, String> doDelete(String urlString, Map<String, String> body) throws IOException {
+  public Map<String, String> doDelete(String urlString, Map<String, String> body) throws IOException, ResponseException {
     URL url = new URL(urlString);
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
     connection.setReadTimeout(5000);
-    connection.setRequestMethod("POST");
+    connection.setRequestMethod("DELETE");
     connection.setDoOutput(true);
 
     // Set HTTP request headers, if necessary
@@ -139,7 +140,7 @@ public class ServerFacade {
 
       InputStream responseBody = connection.getErrorStream();
       // Read and process error response body from InputStream ...
-      return null;
+      throw new ResponseException();
     }
   }
 
@@ -153,9 +154,51 @@ public class ServerFacade {
     Map<String, String> response = doPost(url, body);
     if (response != null) {
       AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
+      authToken = authData.authToken();
       return authData;
     } else {
       throw new ResponseException("Username taken");
+    }
+  }
+
+  public AuthData login(String username, String password) throws IOException, ResponseException {
+    Map<String, String> body = new HashMap<>();
+    body.put("username", username);
+    body.put("password", password);
+
+    String url = baseURL + "session";
+    Map<String, String> response = doPost(url, body);
+
+    if (response != null) {
+      AuthData authData = new AuthData(response.get("usename"), response.get("authToken"));
+      authToken = authData.authToken();
+      return authData;
+    } else {
+      throw new ResponseException("Username and Password don't match");
+    }
+  }
+
+  public void logout() throws IOException, ResponseException {
+    String url = baseURL + "session";
+    try{
+      doDelete(url, null);
+      authToken = null;
+    } catch (ResponseException res) {
+      throw new ResponseException("Unauthorized");
+    }
+  }
+
+  public GameData createGame(String gameName) throws IOException, ResponseException {
+    Map<String, String> body = new HashMap<>();
+    body.put("gameName", gameName);
+
+    String url = baseURL + "game";
+    Map<String, String> result = doPost(url, body);
+    if (result != null) {
+      var gameID = result.get("gameID");
+      return new GameData(gameID, result.get("gameName"));
+    } else {
+      throw new ResponseException("GameName already taken");
     }
   }
 }

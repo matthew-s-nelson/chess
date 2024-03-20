@@ -99,7 +99,8 @@ public class Server {
             var authToken=req.headers("authorization");
             AuthData authData=new AuthData("", authToken);
             var gameRequest=new Gson().fromJson(req.body(), CreateGameRequest.class);
-            GameData game=gameService.createGame(authData, gameRequest.gameName());
+            GameData gameData=gameService.createGame(authData, gameRequest.gameName());
+            CreateGameResponse game = new CreateGameResponse(String.valueOf(gameData.gameID()), gameData.gameName());
             return new Gson().toJson(game);
         } catch (JsonSyntaxException j) {
         res.status(400);
