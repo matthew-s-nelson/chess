@@ -115,4 +115,11 @@ public class ServerFacadeTests {
             facade.listGames();
         });
     }
+
+    @Test
+    void joinGameGood() throws Exception {
+        facade.register("player1", "password", "hi");
+        facade.createGame("test");
+
+    }
 }

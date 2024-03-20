@@ -7,6 +7,7 @@ import serverfacade.ServerFacade;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
@@ -120,7 +121,8 @@ public class Menu {
         createGameScreen(out, scanner);
         return 2;
       case 4:
-        break;
+        listGames(out, scanner);
+        return 2;
       case 5:
         gameID = joinGameScreen(out, scanner);
         break;
@@ -176,6 +178,31 @@ public class Menu {
     out.println("What is the gameID of the game you would like to join?");
     int gameID = scanner.nextInt();
     return gameID;
+  }
+
+  public void listGames(PrintStream out, Scanner scanner) {
+    out.println("List of Games:");
+    try{
+      Collection<GameData> games = serverFacade.listGames();
+      for (GameData game: games) {
+        printListGame(out, scanner, game);
+      }
+    } catch (ResponseException | IOException e) {
+      printError(out, e);
+    }
+  }
+
+  public void printListGame(PrintStream out, Scanner scanner, GameData game) {
+    out.print("Game ID: ");
+    out.println(game.gameID());
+    out.print("Game Name: ");
+    out.println(game.gameName());
+    out.print("White Team: ");
+    out.println(game.whiteUsername());
+    out.print("Black Team: ");
+    out.println(game.blackUsername());
+    out.println();
+    out.println();
   }
 
   public void help(PrintStream out) {
