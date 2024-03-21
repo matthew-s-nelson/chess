@@ -819,4 +819,16 @@ serverfacade.ServerFacade has login, createGame, register, etc. method.
 
 Client Communicator class (add it) with get, post, delete method that accepts parameters, and call those methods from server facade.
 
-# WebSocket
+# Phase 6
+Use jar file to run multiple clients.
+"java -jar client.jar" then any command line arguments.
+Think about adding a gameStatus to gameData (like in check, black won, white won, etc.)
+Add websocket connection to join and observe in serverfacade.
+
+Store session and authToken in a record.
+Map of sessions, mapped by authToken in @WebSocket method
+Map with key gameID and list of users in that game.
+
+Add code to serverFacade to call websockets.
+
+ServerFacade  should accept parameter ServerMessageObserver when initialized. It should pass it on to WebSocketCommunicator.

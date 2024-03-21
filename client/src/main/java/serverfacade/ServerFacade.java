@@ -20,181 +20,17 @@ import java.util.Map;
 public class ServerFacade {
   private String authToken;
   private final String baseURL;
+
+  private HttpCommunicator httpCommunicator;
   int port;
 
   public ServerFacade(int port) {
     this.port = port;
     baseURL = "http://localhost:" + port + "/";
+    httpCommunicator = new HttpCommunicator();
   }
 
-  public Object doGet(String urlString) throws IOException {
-    URL url = new URL(urlString);
 
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-    connection.setReadTimeout(5000);
-    connection.setRequestMethod("GET");
-
-    // Set HTTP request headers, if necessary
-    // connection.addRequestProperty("Accept", "text/html");
-    connection.addRequestProperty("authorization", authToken);
-
-    connection.connect();
-
-    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
-
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-      try (InputStream responseBody = connection.getInputStream()) {
-        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        return new Gson().fromJson(inputStreamReader, Map.class);
-      }
-      // Read and process response body from InputStream ...
-    } else {
-      // SERVER RETURNED AN HTTP ERROR
-
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
-    }
-    return null;
-  }
-
-  public Map<String, String> doPost(String urlString, Map<String, String> body) throws IOException {
-    URL url = new URL(urlString);
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-    connection.setReadTimeout(5000);
-    connection.setRequestMethod("POST");
-    connection.setDoOutput(true);
-
-    // Set HTTP request headers, if necessary
-    if (authToken != null) {
-      connection.addRequestProperty("authorization", authToken);
-    }
-
-    connection.connect();
-
-    try (OutputStream requestBody = connection.getOutputStream()) {
-      var jsonBody = new Gson().toJson(body);
-      requestBody.write(jsonBody.getBytes());
-    }
-
-    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
-
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
-      try (InputStream responseBody = connection.getInputStream()) {
-        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        return new Gson().fromJson(inputStreamReader, Map.class);
-      }
-    }
-    else {
-      // SERVER RETURNED AN HTTP ERROR
-
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
-      return null;
-    }
-  }
-
-  public Map<String, String> doDelete(String urlString, Map<String, String> body) throws IOException, ResponseException {
-    URL url = new URL(urlString);
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-    connection.setReadTimeout(5000);
-    connection.setRequestMethod("DELETE");
-    connection.setDoOutput(true);
-
-    // Set HTTP request headers, if necessary
-    if (authToken != null) {
-      connection.addRequestProperty("authorization", authToken);
-    }
-
-    connection.connect();
-
-    try (OutputStream requestBody = connection.getOutputStream()) {
-      var jsonBody = new Gson().toJson(body);
-      requestBody.write(jsonBody.getBytes());
-    }
-
-    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
-
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
-      try (InputStream responseBody = connection.getInputStream()) {
-        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        return new Gson().fromJson(inputStreamReader, Map.class);
-      }
-    }
-    else {
-      // SERVER RETURNED AN HTTP ERROR
-
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
-      throw new ResponseException();
-    }
-  }
-
-  public Map<String, String> doPut(String urlString, Map<String, String> body) throws IOException {
-    URL url = new URL(urlString);
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-    connection.setReadTimeout(5000);
-    connection.setRequestMethod("PUT");
-    connection.setDoOutput(true);
-
-    // Set HTTP request headers, if necessary
-    if (authToken != null) {
-      connection.addRequestProperty("authorization", authToken);
-    }
-
-    connection.connect();
-
-    try (OutputStream requestBody = connection.getOutputStream()) {
-      var jsonBody = new Gson().toJson(body);
-      requestBody.write(jsonBody.getBytes());
-    }
-
-    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
-
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
-      try (InputStream responseBody = connection.getInputStream()) {
-        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        return new Gson().fromJson(inputStreamReader, Map.class);
-      }
-    }
-    else {
-      // SERVER RETURNED AN HTTP ERROR
-
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
-      InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-      return new Gson().fromJson(inputStreamReader, Map.class);
-    }
-  }
 
   public AuthData register(String username, String password, String email) throws IOException, ResponseException {
     Map<String, String> body = new HashMap<>();
@@ -203,7 +39,7 @@ public class ServerFacade {
     body.put("email", email);
 
     String url = baseURL + "user";
-    Map<String, String> response = doPost(url, body);
+    Map<String, String> response = httpCommunicator.doPost(url, body, authToken);
     if (response != null) {
       AuthData authData = new AuthData(response.get("username"), response.get("authToken"));
       authToken = authData.authToken();
@@ -219,7 +55,7 @@ public class ServerFacade {
     body.put("password", password);
 
     String url = baseURL + "session";
-    Map<String, String> response = doPost(url, body);
+    Map<String, String> response = httpCommunicator.doPost(url, body, authToken);
 
     if (response != null) {
       AuthData authData = new AuthData(response.get("usename"), response.get("authToken"));
@@ -233,7 +69,7 @@ public class ServerFacade {
   public void logout() throws IOException, ResponseException {
     String url = baseURL + "session";
     try{
-      doDelete(url, null);
+      httpCommunicator.doDelete(url, null, authToken);
       authToken = null;
     } catch (ResponseException res) {
       throw new ResponseException("Unauthorized");
@@ -245,7 +81,7 @@ public class ServerFacade {
     body.put("gameName", gameName);
 
     String url = baseURL + "game";
-    Map<String, String> result = doPost(url, body);
+    Map<String, String> result = httpCommunicator.doPost(url, body, authToken);
     if (result != null) {
       var gameID = result.get("gameID");
       return new GameData(gameID, result.get("gameName"));
@@ -256,7 +92,7 @@ public class ServerFacade {
 
   public Collection<GameData> listGames() throws IOException, ResponseException {
     String url = baseURL + "game";
-    Object response = doGet(url);
+    Object response = httpCommunicator.doGet(url, authToken);
     Collection<GameData> gameDataCollection = new ArrayList<>();
     if (response instanceof Map<?,?> && ((Map<?, ?>) response).get("games") instanceof ArrayList) {
       ArrayList gamesData = ((Map<?, ArrayList>) response).get("games");
@@ -282,7 +118,7 @@ public class ServerFacade {
     body.put("gameID", gameID);
 
     String url = baseURL + "game";
-    Map<String, String> response = doPut(url, body);
+    Map<String, String> response = httpCommunicator.doPut(url, body, authToken);
 
     if (response != null) {
       throw new ResponseException(response.get("message"));
