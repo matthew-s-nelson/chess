@@ -110,7 +110,7 @@ public class Menu {
     switch (response) {
       case 1:
         help(out);
-        break;
+        return 2;
       case 2:
         out.println("Logging out");
         try{
