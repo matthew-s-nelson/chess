@@ -151,6 +151,51 @@ public class ServerFacade {
     }
   }
 
+  public Map<String, String> doPut(String urlString, Map<String, String> body) throws IOException {
+    URL url = new URL(urlString);
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+    connection.setReadTimeout(5000);
+    connection.setRequestMethod("PUT");
+    connection.setDoOutput(true);
+
+    // Set HTTP request headers, if necessary
+    if (authToken != null) {
+      connection.addRequestProperty("authorization", authToken);
+    }
+
+    connection.connect();
+
+    try (OutputStream requestBody = connection.getOutputStream()) {
+      var jsonBody = new Gson().toJson(body);
+      requestBody.write(jsonBody.getBytes());
+    }
+
+    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+      // Get HTTP response headers, if necessary
+      // Map<String, List<String>> headers = connection.getHeaderFields();
+
+      // OR
+
+      //connection.getHeaderField("Content-Length");
+
+//      InputStream responseBody = connection.getInputStream();
+      try (InputStream responseBody = connection.getInputStream()) {
+        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
+        return new Gson().fromJson(inputStreamReader, Map.class);
+      }
+    }
+    else {
+      // SERVER RETURNED AN HTTP ERROR
+
+      InputStream responseBody = connection.getErrorStream();
+      // Read and process error response body from InputStream ...
+      InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
+      return new Gson().fromJson(inputStreamReader, Map.class);
+    }
+  }
+
   public AuthData register(String username, String password, String email) throws IOException, ResponseException {
     Map<String, String> body = new HashMap<>();
     body.put("username", username);
@@ -229,5 +274,18 @@ public class ServerFacade {
       return gameDataCollection;
     }
     throw new ResponseException("Unauthorized");
+  }
+
+  public void joinGame(String playerColor, String gameID) throws IOException, ResponseException {
+    Map<String, String> body = new HashMap<>();
+    body.put("playerColor", playerColor);
+    body.put("gameID", gameID);
+
+    String url = baseURL + "game";
+    Map<String, String> response = doPut(url, body);
+
+    if (response != null) {
+      throw new ResponseException(response.get("message"));
+    }
   }
 }

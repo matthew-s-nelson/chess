@@ -133,7 +133,7 @@ public class Server {
             return new Gson().toJson(null);
         } catch (JsonSyntaxException | DataAccessException j) {
             res.status(400);
-            return new Gson().toJson(new ErrorResponse("Error: bad request"));
+            return new Gson().toJson(new ErrorResponse("Error: gameID does not exist"));
         } catch (RuntimeException e) {
             res.status(401);
             return new Gson().toJson(new ErrorResponse("Error: unauthorized"));

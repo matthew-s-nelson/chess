@@ -14,8 +14,10 @@ import static ui.EscapeSequences.*;
 
 public class Menu {
   private ServerFacade serverFacade;
+  ChessBoard chessBoard;
   public Menu(ServerFacade serverFacade) {
     this.serverFacade = serverFacade;
+    chessBoard = new ChessBoard();
   }
 
   public void run() {
@@ -104,7 +106,7 @@ public class Menu {
   public int loggedInMenu(PrintStream out, Scanner scanner) {
     printLoggedInMenu(out);
     int response = scanner.nextInt();
-    int gameID;
+
     switch (response) {
       case 1:
         help(out);
@@ -124,11 +126,11 @@ public class Menu {
         listGames(out, scanner);
         return 2;
       case 5:
-        gameID = joinGameScreen(out, scanner);
-        break;
+        joinGameScreen(out, scanner);
+        return 2;
       case 6:
-        gameID = joinGameScreen(out, scanner);
-        break;
+        joinAsObserverScreen(out, scanner);
+        return 2;
     }
     return 3;
   }
@@ -174,14 +176,44 @@ public class Menu {
     return loggedIn;
   }
 
-  public int joinGameScreen(PrintStream out, Scanner scanner) {
+  public void joinGameScreen(PrintStream out, Scanner scanner) {
     out.println("What is the gameID of the game you would like to join?");
-    int gameID = scanner.nextInt();
-    return gameID;
+    String gameID = scanner.next();
+    out.println("Which color do you want to join as?");
+    out.println("1. White");
+    out.println("2. Black");
+    int playerColor = scanner.nextInt();
+    try {
+      serverFacade.joinGame(selectColor(playerColor), gameID);
+      chessBoard.drawBoard();
+    } catch (ResponseException | IOException e) {
+      printError(out, e);
+    }
+  }
+
+  public void joinAsObserverScreen(PrintStream out, Scanner scanner) {
+    out.println("What is the gameID of the game you would like to join?");
+    String gameID = scanner.next();
+    try {
+      serverFacade.joinGame(null, gameID);
+      chessBoard.drawBoard();
+    } catch (ResponseException | IOException e) {
+      printError(out, e);
+    }
+  }
+
+  public String selectColor(int colorNum) {
+    if (colorNum == 1) {
+      return "WHITE";
+    } else if (colorNum == 2) {
+      return "BLACK";
+    }
+    return null;
   }
 
   public void listGames(PrintStream out, Scanner scanner) {
     out.println("List of Games:");
+    out.println();
     try{
       Collection<GameData> games = serverFacade.listGames();
       for (GameData game: games) {
@@ -201,7 +233,6 @@ public class Menu {
     out.println(game.whiteUsername());
     out.print("Black Team: ");
     out.println(game.blackUsername());
-    out.println();
     out.println();
   }
 

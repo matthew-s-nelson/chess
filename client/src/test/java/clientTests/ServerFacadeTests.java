@@ -2,6 +2,7 @@ package clientTests;
 
 import model.GameData;
 import org.junit.jupiter.api.*;
+import server.JoinGameRequest;
 import server.Server;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
@@ -120,6 +121,23 @@ public class ServerFacadeTests {
     void joinGameGood() throws Exception {
         facade.register("player1", "password", "hi");
         facade.createGame("test");
+        Assertions.assertDoesNotThrow(() -> {
+            facade.joinGame("WHITE", "1");
+        });
 
+        Collection<GameData> expected = new ArrayList<>();
+        expected.add(new GameData(1, "player1", null, "test", null));
+
+        Collection<GameData> result = facade.listGames();
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    void joinGameBad() throws Exception {
+        facade.register("player1", "password", "hi");
+        facade.createGame("test");
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.joinGame("WHITE", "2");
+        });
     }
 }
