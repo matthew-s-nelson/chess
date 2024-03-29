@@ -23,29 +23,19 @@ public class HttpCommunicator {
     connection.setRequestMethod("GET");
 
     // Set HTTP request headers, if necessary
-    // connection.addRequestProperty("Accept", "text/html");
     connection.addRequestProperty("authorization", authToken);
 
     connection.connect();
 
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
-
-      // OR
-
-      //connection.getHeaderField("Content-Length");
 
       try (InputStream responseBody = connection.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
         return new Gson().fromJson(inputStreamReader, Map.class);
       }
-      // Read and process response body from InputStream ...
-    } else {
-      // SERVER RETURNED AN HTTP ERROR
 
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
+    } else {
+//      InputStream responseBody = connection.getErrorStream();
     }
     return null;
   }
@@ -72,24 +62,16 @@ public class HttpCommunicator {
     }
 
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
 
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
       try (InputStream responseBody = connection.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
         return new Gson().fromJson(inputStreamReader, Map.class);
       }
     }
     else {
-      // SERVER RETURNED AN HTTP ERROR
 
       InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
+
       return null;
     }
   }
@@ -116,24 +98,14 @@ public class HttpCommunicator {
     }
 
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
 
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
       try (InputStream responseBody = connection.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
         return new Gson().fromJson(inputStreamReader, Map.class);
       }
     }
     else {
-      // SERVER RETURNED AN HTTP ERROR
-
-      InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
+.
       throw new ResponseException();
     }
   }
@@ -147,7 +119,6 @@ public class HttpCommunicator {
     connection.setRequestMethod("PUT");
     connection.setDoOutput(true);
 
-    // Set HTTP request headers, if necessary
     if (authToken != null) {
       connection.addRequestProperty("authorization", authToken);
     }
@@ -160,24 +131,15 @@ public class HttpCommunicator {
     }
 
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Get HTTP response headers, if necessary
-      // Map<String, List<String>> headers = connection.getHeaderFields();
 
-      // OR
-
-      //connection.getHeaderField("Content-Length");
-
-//      InputStream responseBody = connection.getInputStream();
       try (InputStream responseBody = connection.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
         return new Gson().fromJson(inputStreamReader, Map.class);
       }
     }
     else {
-      // SERVER RETURNED AN HTTP ERROR
 
       InputStream responseBody = connection.getErrorStream();
-      // Read and process error response body from InputStream ...
       InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
       return new Gson().fromJson(inputStreamReader, Map.class);
     }

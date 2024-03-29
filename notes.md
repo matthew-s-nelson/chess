@@ -832,3 +832,10 @@ Map with key gameID and list of users in that game.
 Add code to serverFacade to call websockets.
 
 ServerFacade  should accept parameter ServerMessageObserver when initialized. It should pass it on to WebSocketCommunicator.
+
+Make a gson class that deserializes based on type of command.
+
+Start: Set up websockt for server, then for client (pull code out of slides).
+Then, work through each command (make moves is hardest, so do that last). In make move, and resign, update status in gameData. leave game is easiest.
+
+Pass in position, and pass in matrix of booleans which are all the positions that are highlighted.
