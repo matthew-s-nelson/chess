@@ -105,7 +105,6 @@ public class HttpCommunicator {
       }
     }
     else {
-.
       throw new ResponseException();
     }
   }
