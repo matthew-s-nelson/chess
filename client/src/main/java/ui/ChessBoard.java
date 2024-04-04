@@ -20,16 +20,13 @@ public class ChessBoard {
   }
 
   // color key: 0 = white, 1 = black
-  public void drawBoard() {
+  public void drawBoard(int playerColor) {
     var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    drawHeader(out, 0);
-    drawRows(out, 0);
-    drawHeader(out, 0);
+    drawHeader(out, playerColor-1);
+    drawRows(out, playerColor-1);
+    drawHeader(out, playerColor-1);
 
     out.println();
-    drawHeader(out, 1);
-    drawRows(out, 1);
-    drawHeader(out, 1);
   }
 
   public void drawHeader(PrintStream out, int color) {
