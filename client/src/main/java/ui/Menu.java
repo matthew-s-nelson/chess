@@ -185,15 +185,37 @@ public class Menu {
     int playerColor = scanner.nextInt();
     try {
       serverFacade.joinGame(selectColor(playerColor), gameID);
+      serverFacade.connect();
+      out.println("IT WORKED");
       inGameScreen(out, scanner, playerColor);
     } catch (ResponseException | IOException e) {
       printError(out, e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
   public int inGameScreen(PrintStream out, Scanner scanner, int playerColor) {
     inGameOptions(out);
     chessBoard.drawBoard(playerColor);
+    int optionSelected = scanner.nextInt();
+
+    switch (optionSelected) {
+      case 1:
+        help(out);
+        break;
+      case 2:
+        chessBoard.drawBoard(playerColor);
+      case 3:
+        return 0;
+      case 4:
+        break;
+      case 5:
+        return 0;
+      case 6:
+//        chessBoard.highlightLegalMoves(playerColor);
+        break;
+    }
     return 0;
   }
 

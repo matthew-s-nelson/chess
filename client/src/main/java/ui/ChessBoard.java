@@ -164,4 +164,8 @@ public class ChessBoard {
     }
     return currentNum;
   }
+
+//  public void highlightLegalMoves(int playerColor) {
+//    game.
+//  }
 }

@@ -1,5 +1,6 @@
 package serverfacade;
 
+import WebSocket.WSClient;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
@@ -22,6 +23,7 @@ public class ServerFacade {
   private final String baseURL;
 
   private HttpCommunicator httpCommunicator;
+  private WSClient wsCommunicator;
   int port;
 
   public ServerFacade(int port) {
@@ -123,5 +125,9 @@ public class ServerFacade {
     if (response != null) {
       throw new ResponseException(response.get("message"));
     }
+  }
+
+  public void connect() throws Exception {
+    wsCommunicator = new WSClient(baseURL);
   }
 }

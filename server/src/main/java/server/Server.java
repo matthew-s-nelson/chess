@@ -6,6 +6,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import server.websocket.WSServer;
 import service.*;
 import spark.*;
 
@@ -15,6 +16,7 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
+    private final WSServer webSocketHandler;
 
     public Server() {
         AuthDAO authDAO = new SqlAuthDAO();
@@ -25,12 +27,15 @@ public class Server {
         gameService = new GameService(userDAO, authDAO, gameDAO);
         clearService = new ClearService(authDAO, userDAO, gameDAO);
 
+        webSocketHandler = new WSServer();
     }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/connect", WSServer.class);
 
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
