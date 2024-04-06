@@ -5,6 +5,7 @@ public class JoinGameRequest extends UserGameCommand {
   public JoinGameRequest(String authToken, int gameID) {
     super(authToken);
     this.gameID = gameID;
+    this.commandType = CommandType.JOIN_PLAYER;
   }
 
   public int getGameID() {
