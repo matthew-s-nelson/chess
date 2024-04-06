@@ -50,6 +50,9 @@ public class SqlGameDAO implements GameDAO{
   @Override
   public GameData insertGame(String gameName) {
     ChessGame chessGame = new ChessGame();
+    ChessBoard board = new ChessBoard();
+    board.resetBoard();
+    chessGame.setBoard(board);
     int id;
 
     try (var conn = DatabaseManager.getConnection()) {

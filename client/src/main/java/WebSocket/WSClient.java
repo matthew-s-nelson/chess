@@ -28,7 +28,10 @@ public class WSClient extends Endpoint {
 //          observer.notify(serverMessage);
           switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME:
+              System.out.println("Pre print");
               loadGame(message);
+              System.out.println("post print");
+              break;
             case ERROR:
               error();
             case NOTIFICATION:
