@@ -17,7 +17,6 @@ public class Menu {
   ChessBoard chessBoard;
   public Menu(ServerFacade serverFacade) {
     this.serverFacade = serverFacade;
-    chessBoard = new ChessBoard();
   }
 
   public void run() {
@@ -184,8 +183,8 @@ public class Menu {
     out.println("2. Black");
     int playerColor = scanner.nextInt();
     try {
-      serverFacade.joinGame(selectColor(playerColor), gameID);
-      serverFacade.connect();
+      chessBoard = new ChessBoard(playerColor);
+      serverFacade.joinGame(selectColor(playerColor), gameID, chessBoard);
       out.println("IT WORKED");
       inGameScreen(out, scanner, playerColor);
     } catch (ResponseException | IOException e) {
@@ -197,7 +196,6 @@ public class Menu {
 
   public int inGameScreen(PrintStream out, Scanner scanner, int playerColor) {
     inGameOptions(out);
-    chessBoard.drawBoard(playerColor);
     int optionSelected = scanner.nextInt();
 
     switch (optionSelected) {
@@ -205,7 +203,7 @@ public class Menu {
         help(out);
         break;
       case 2:
-        chessBoard.drawBoard(playerColor);
+        chessBoard.drawBoard(null);
       case 3:
         return 0;
       case 4:
@@ -232,10 +230,13 @@ public class Menu {
     out.println("What is the gameID of the game you would like to join?");
     String gameID = scanner.next();
     try {
-      serverFacade.joinGame(null, gameID);
-      chessBoard.drawBoard(1);
+      chessBoard = new ChessBoard(1);
+      serverFacade.joinGame(null, gameID, chessBoard);
+      chessBoard.drawBoard(null);
     } catch (ResponseException | IOException e) {
       printError(out, e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

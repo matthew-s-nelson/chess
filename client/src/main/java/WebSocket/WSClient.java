@@ -2,6 +2,7 @@ package WebSocket;
 
 import com.google.gson.Gson;
 import ui.ChessBoard;
+import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import javax.websocket.*;
@@ -11,7 +12,9 @@ public class WSClient extends Endpoint {
   private Session session;
   private ChessBoard chessBoard;
 
-  public WSClient(String url) throws Exception {
+  public WSClient(String url, ChessBoard chessBoard) throws Exception {
+    this.chessBoard = chessBoard;
+
     url = url.replace("http", "ws") + "connect";
     System.out.println(url);
     URI uri = new URI(url);
@@ -25,7 +28,7 @@ public class WSClient extends Endpoint {
 //          observer.notify(serverMessage);
           switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME:
-              loadGame();
+              loadGame(message);
             case ERROR:
               error();
             case NOTIFICATION:
@@ -39,8 +42,10 @@ public class WSClient extends Endpoint {
     });
   }
 
-  private void loadGame() {
-
+  private void loadGame(String message) {
+    LoadGameResponse loadGameResponse = new Gson().fromJson(message, LoadGameResponse.class);
+    chess.ChessBoard board = loadGameResponse.board();
+    chessBoard.drawBoard(board);
   }
 
   private void error() {

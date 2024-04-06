@@ -7,6 +7,7 @@ import server.Server;
 import serverfacade.ResponseException;
 import serverfacade.ServerFacade;
 import spark.utils.Assert;
+import ui.ChessBoard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class ServerFacadeTests {
         facade.register("player1", "password", "hi");
         facade.createGame("test");
         Assertions.assertDoesNotThrow(() -> {
-            facade.joinGame("WHITE", "1");
+            facade.joinGame("WHITE", "1", new ChessBoard(1));
         });
 
         Collection<GameData> expected = new ArrayList<>();
@@ -137,7 +138,7 @@ public class ServerFacadeTests {
         facade.register("player1", "password", "hi");
         facade.createGame("test");
         Assertions.assertThrows(ResponseException.class, () -> {
-            facade.joinGame("WHITE", "2");
+            facade.joinGame("WHITE", "2", new ChessBoard(1));
         });
     }
 }

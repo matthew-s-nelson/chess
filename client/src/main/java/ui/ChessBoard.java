@@ -13,14 +13,17 @@ public class ChessBoard {
   private final String BORDER_SPACE = " ";
   private final String EMPTY_SQUARE = "   ";
   private chess.ChessBoard board;
+  private int playerColor;
 
-  public ChessBoard() {
-    board = new chess.ChessBoard();
-    board.resetBoard();
+  public ChessBoard(int playerColor) {
+    this.playerColor = playerColor;
   }
 
   // color key: 0 = white, 1 = black
-  public void drawBoard(int playerColor) {
+  public void drawBoard(chess.ChessBoard board) {
+    if (board != null) {
+      this.board = board;
+    }
     var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     drawHeader(out, playerColor-1);
     drawRows(out, playerColor-1);

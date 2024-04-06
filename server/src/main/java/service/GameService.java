@@ -56,4 +56,18 @@ public class GameService {
     }
     throw new GameJoinException("Game already taken");
   }
+
+  public boolean checkIfUserInGame(String authToken, int gameID) throws DataAccessException {
+    GameData game = gameDAO.selectGame(gameID);
+    AuthData auth = authDAO.getAuth(authToken);
+    // Check if the user is in the
+    if (Objects.equals(game.blackUsername(), auth.username()) || Objects.equals(game.whiteUsername(), auth.username())){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  public GameData getGameData(int gameID) throws DataAccessException {
+    return gameDAO.selectGame(gameID);
+  }
 }

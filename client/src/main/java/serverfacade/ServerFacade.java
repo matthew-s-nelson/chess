@@ -5,6 +5,10 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
+import org.springframework.security.core.userdetails.User;
+import ui.ChessBoard;
+import webSocketMessages.userCommands.JoinGameRequest;
+import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,7 +118,7 @@ public class ServerFacade {
     throw new ResponseException("Unauthorized");
   }
 
-  public void joinGame(String playerColor, String gameID) throws IOException, ResponseException {
+  public void joinGame(String playerColor, String gameID, ChessBoard chessBoard) throws Exception {
     Map<String, String> body = new HashMap<>();
     body.put("playerColor", playerColor);
     body.put("gameID", gameID);
@@ -125,9 +129,12 @@ public class ServerFacade {
     if (response != null) {
       throw new ResponseException(response.get("message"));
     }
+    wsCommunicator = new WSClient(baseURL, chessBoard);
+    JoinGameRequest joinRequest = new JoinGameRequest(authToken, Integer.parseInt(gameID));
+    wsCommunicator.send(new Gson().toJson(joinRequest));
   }
 
-  public void connect() throws Exception {
-    wsCommunicator = new WSClient(baseURL);
-  }
+//  public void connect() throws Exception {
+//    wsCommunicator = new WSClient(baseURL);
+//  }
 }

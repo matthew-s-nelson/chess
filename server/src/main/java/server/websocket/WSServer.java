@@ -1,19 +1,27 @@
 package server.websocket;
 
+import chess.ChessBoard;
 import com.google.gson.Gson;
+import dataAccess.*;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.gson;
+import service.GameService;
 import spark.Spark;
+import webSocketMessages.serverMessages.LoadGameResponse;
+import webSocketMessages.userCommands.JoinGameRequest;
 import webSocketMessages.userCommands.UserGameCommand;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @WebSocket
 public class WSServer {
   private ConnectionManager connections = new ConnectionManager();
+  private final GameService gameService = new GameService(new SqlUserDAO(), new SqlAuthDAO(), new SqlGameDAO());
 //  public static void main(String[] args) {
 //    Spark.port(8080);
 //    Spark.webSocket("/connect", WSServer.class);
@@ -43,7 +51,22 @@ public class WSServer {
   }
 
   public void join(Session session, String msg) {
+    JoinGameRequest joinRequest = new Gson().fromJson(msg, JoinGameRequest.class);
+    String authToken =joinRequest.getAuthString();
+    int gameID =joinRequest.getGameID();
+    try {
+      gameService.checkIfUserInGame(authToken, gameID);
+      GameData gameData = gameService.getGameData(gameID);
+      connections.addUserToGame(joinRequest.getGameID(), joinRequest.getAuthString());
+      ChessBoard chessBoard = gameData.game().getBoard();
+      LoadGameResponse loadGameResponse = new LoadGameResponse(chessBoard);
+      String msgToSend = new Gson().toJson(loadGameResponse);
+      session.getRemote().sendString(msgToSend);
+    } catch (DataAccessException e) {
 
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void observe(Session session, String msg) {
