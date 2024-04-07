@@ -1,7 +1,15 @@
 package server.websocket;
 
+import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import dataAccess.SqlAuthDAO;
+import dataAccess.SqlUserDAO;
+import model.AuthData;
 import org.eclipse.jetty.websocket.api.Session;
+import service.UserService;
+import webSocketMessages.serverMessages.NotificationResponse;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +28,7 @@ public class ConnectionManager {
     connections.put(authToken, session);
   }
 
-  public Session getConnection(String authToken) {
+  public Session getSession(String authToken) {
     return connections.get(authToken);
   }
 
@@ -31,6 +39,26 @@ public class ConnectionManager {
       gameMap.put(gameID, users);
     }
     users.add(authToken);
+  }
+
+  public Map<Integer, Set<String>> getGameMap() {
+    return gameMap;
+  }
+
+  public Set<String> getGameParticipants(int gameID) {
+    return gameMap.get(gameID);
+  }
+
+  public void broadcast(String message, String authToken, int gameID) throws DataAccessException, IOException {
+    Set<String> gameParticipants = this.getGameParticipants(gameID);
+    NotificationResponse notificationResponse = new NotificationResponse(message);
+    String gsonMessage = new Gson().toJson(notificationResponse);
+    for (String participant: gameParticipants) {
+      if (participant != authToken) {
+        Session participantSession = this.getSession(participant);
+        participantSession.getRemote().sendString(gsonMessage);
+      }
+    }
   }
 
   public void remove(String authToken) {

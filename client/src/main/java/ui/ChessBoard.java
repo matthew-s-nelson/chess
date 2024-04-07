@@ -14,6 +14,7 @@ public class ChessBoard {
   private final String EMPTY_SQUARE = "   ";
   private chess.ChessBoard board;
   private int playerColor;
+  private PrintStream printStream;
 
   public ChessBoard(int playerColor) {
     this.playerColor = playerColor;
@@ -25,6 +26,7 @@ public class ChessBoard {
       this.board = board;
     }
     var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+    printStream = out;
     drawHeader(out, playerColor-1);
     drawRows(out, playerColor-1);
     drawHeader(out, playerColor-1);
@@ -166,6 +168,10 @@ public class ChessBoard {
       currentNum--;
     }
     return currentNum;
+  }
+
+  public void notify(String message) {
+    printStream.println(message);
   }
 
 //  public void highlightLegalMoves(int playerColor) {

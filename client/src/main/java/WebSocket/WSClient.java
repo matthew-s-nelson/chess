@@ -3,6 +3,7 @@ package WebSocket;
 import com.google.gson.Gson;
 import ui.ChessBoard;
 import webSocketMessages.serverMessages.LoadGameResponse;
+import webSocketMessages.serverMessages.NotificationResponse;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import javax.websocket.*;
@@ -35,11 +36,16 @@ public class WSClient extends Endpoint {
             case ERROR:
               error();
             case NOTIFICATION:
-              notify();
+              this.notify(message);
           }
         } catch(Exception ex) {
 //          observer.notify(new ErrorMessage(ex.getMessage()));
         }
+      }
+
+      private void notify(String message) {
+        NotificationResponse notification = new Gson().fromJson(message, NotificationResponse.class);
+        chessBoard.notify(notification.message());
       }
 
     });

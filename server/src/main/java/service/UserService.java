@@ -40,4 +40,8 @@ public class UserService {
       throw new RuntimeException(e);
     }
   }
+
+  public AuthData getUser(String authToken) throws DataAccessException {
+    return authDAO.getAuth(authToken);
+  }
 }
