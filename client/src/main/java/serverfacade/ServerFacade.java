@@ -1,22 +1,14 @@
 package serverfacade;
 
 import WebSocket.WSClient;
-import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
-import org.springframework.security.core.userdetails.User;
 import ui.ChessBoard;
 import webSocketMessages.userCommands.JoinGameRequest;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.MakeMoveRequest;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -134,7 +126,8 @@ public class ServerFacade {
     wsCommunicator.send(new Gson().toJson(joinRequest));
   }
 
-//  public void connect() throws Exception {
-//    wsCommunicator = new WSClient(baseURL);
-//  }
+  public void makeMove(String startPos, String endPos, int gameID) throws Exception {
+    MakeMoveRequest makeMoveRequest = new MakeMoveRequest(authToken, startPos, endPos, gameID);
+    wsCommunicator.send(new Gson().toJson(makeMoveRequest));
+  }
 }

@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
@@ -64,10 +65,14 @@ public class GameService {
     if (Objects.equals(game.blackUsername(), auth.username()) || Objects.equals(game.whiteUsername(), auth.username())){
       return true;
     } else {
-      return false;
+      throw new DataAccessException("User not in game.");
     }
   }
   public GameData getGameData(int gameID) throws DataAccessException {
     return gameDAO.selectGame(gameID);
+  }
+
+  public void updateGame(int gameID, ChessGame game) throws DataAccessException {
+    gameDAO.updateGame(gameID, game);
   }
 }

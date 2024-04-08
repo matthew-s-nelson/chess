@@ -1,6 +1,6 @@
 package server.websocket;
 
-import chess.ChessBoard;
+import chess.*;
 import com.google.gson.Gson;
 import dataAccess.*;
 import model.AuthData;
@@ -12,12 +12,15 @@ import server.gson;
 import service.GameService;
 import service.UserService;
 import spark.Spark;
+import webSocketMessages.serverMessages.ErrorResponse;
 import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
 import webSocketMessages.userCommands.JoinGameRequest;
+import webSocketMessages.userCommands.MakeMoveRequest;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +59,7 @@ public class WSServer {
     }
   }
 
-  public void join(Session session, String msg) {
+  public void join(Session session, String msg) throws IOException {
     JoinGameRequest joinRequest = new Gson().fromJson(msg, JoinGameRequest.class);
     String authToken =joinRequest.getAuthString();
     int gameID =joinRequest.getGameID();
@@ -67,8 +70,7 @@ public class WSServer {
       }
       GameData gameData = gameService.getGameData(gameID);
       connections.addUserToGame(joinRequest.getGameID(), joinRequest.getAuthString());
-      ChessBoard chessBoard = gameData.game().getBoard();
-      LoadGameResponse loadGameResponse = new LoadGameResponse(chessBoard);
+      LoadGameResponse loadGameResponse = new LoadGameResponse(gameData.game());
       String msgToSend = new Gson().toJson(loadGameResponse);
 
       session.getRemote().sendString(msgToSend);
@@ -78,7 +80,8 @@ public class WSServer {
       connections.broadcast(broadcastMessage, authToken, gameID);
 
     } catch (DataAccessException e) {
-
+      ErrorResponse errorResponse = new ErrorResponse("Error");
+      session.getRemote().sendString(new Gson().toJson(errorResponse));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -89,7 +92,26 @@ public class WSServer {
   }
 
   public void move(Session session, String msg) {
+    MakeMoveRequest makeMoveRequest = new Gson().fromJson(msg, MakeMoveRequest.class);
+    try {
+      GameData gameData = gameService.getGameData(makeMoveRequest.getGameID());
+      ChessGame game = gameData.game();
+      ChessMove move = new ChessMove(makeMoveRequest.getStartPos(), makeMoveRequest.getEndPos(), null);
+      game.makeMove(move);
+      gameService.updateGame(gameData.gameID(), game);
 
+      connections.loadGameForAll(gameData.gameID(), game);
+
+      AuthData authData = userService.getUser(makeMoveRequest.getAuthString());
+      String msgToSend = String.format("%s made a move.", authData.username());
+      connections.broadcast(msgToSend, makeMoveRequest.getAuthString(), gameData.gameID());
+    } catch (DataAccessException e) {
+
+    } catch (InvalidMoveException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void leave(Session session, String msg) {

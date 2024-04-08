@@ -53,7 +53,7 @@ public class WSClient extends Endpoint {
 
   private void loadGame(String message) {
     LoadGameResponse loadGameResponse = new Gson().fromJson(message, LoadGameResponse.class);
-    chess.ChessBoard board = loadGameResponse.board();
+    chess.ChessBoard board = loadGameResponse.game().getBoard();
     chessBoard.drawBoard(board);
   }
 

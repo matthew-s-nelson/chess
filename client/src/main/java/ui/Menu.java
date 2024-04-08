@@ -15,6 +15,7 @@ import static ui.EscapeSequences.*;
 public class Menu {
   private ServerFacade serverFacade;
   ChessBoard chessBoard;
+  int currentGameID;
   public Menu(ServerFacade serverFacade) {
     this.serverFacade = serverFacade;
   }
@@ -178,6 +179,7 @@ public class Menu {
   public void joinGameScreen(PrintStream out, Scanner scanner) {
     out.println("What is the gameID of the game you would like to join?");
     String gameID = scanner.next();
+    currentGameID = Integer.valueOf(gameID);
     out.println("Which color do you want to join as?");
     out.println("1. White");
     out.println("2. Black");
@@ -207,6 +209,7 @@ public class Menu {
       case 3:
         return 0;
       case 4:
+        makeMoveScreen(out, scanner);
         break;
       case 5:
         return 0;
@@ -286,5 +289,17 @@ public class Menu {
     out.println(e.getMessage());
     out.print(RESET_TEXT_BOLD_FAINT);
     out.print(SET_TEXT_COLOR_WHITE);
+  }
+
+  public void makeMoveScreen(PrintStream out, Scanner scanner) {
+    out.println("What is the position of the piece you would like to move?");
+    String startPos = scanner.next();
+    out.println("What is the position you would like to move it to?");
+    String endPos = scanner.next();
+    try {
+      serverFacade.makeMove(startPos, endPos, currentGameID);
+    } catch (Exception e) {
+      out.print(e);
+    }
   }
 }

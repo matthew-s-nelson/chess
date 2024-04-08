@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SqlAuthDAO;
@@ -7,6 +8,7 @@ import dataAccess.SqlUserDAO;
 import model.AuthData;
 import org.eclipse.jetty.websocket.api.Session;
 import service.UserService;
+import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
 
 import java.io.IOException;
@@ -63,5 +65,14 @@ public class ConnectionManager {
 
   public void remove(String authToken) {
     connections.remove(authToken);
+  }
+
+  public void loadGameForAll(int gameID, ChessGame game) throws IOException {
+    LoadGameResponse loadGameResponse = new LoadGameResponse(game);
+    String gsonMessage = new Gson().toJson(loadGameResponse);
+    Set<String> gameParticipants = getGameParticipants(gameID);
+    for (String participant: gameParticipants) {
+      getSession(participant).getRemote().sendString(gsonMessage);
+    }
   }
 }
