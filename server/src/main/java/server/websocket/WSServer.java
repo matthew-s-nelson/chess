@@ -62,6 +62,9 @@ public class WSServer {
     int gameID =joinRequest.getGameID();
     try {
       gameService.checkIfUserInGame(authToken, gameID);
+      if (joinRequest.getColor() == null) {
+        joinRequest.setColor("OBSERVER");
+      }
       GameData gameData = gameService.getGameData(gameID);
       connections.addUserToGame(joinRequest.getGameID(), joinRequest.getAuthString());
       ChessBoard chessBoard = gameData.game().getBoard();

@@ -232,7 +232,7 @@ public class Menu {
     try {
       chessBoard = new ChessBoard(1);
       serverFacade.joinGame(null, gameID, chessBoard);
-      chessBoard.drawBoard(null);
+//      chessBoard.drawBoard(null);
     } catch (ResponseException | IOException e) {
       printError(out, e);
     } catch (Exception e) {

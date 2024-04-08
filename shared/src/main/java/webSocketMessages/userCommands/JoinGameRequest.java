@@ -18,4 +18,8 @@ public class JoinGameRequest extends UserGameCommand {
   public String getColor() {
     return color;
   }
+
+  public void setColor(String newColor) {
+    color = newColor;
+  }
 }
