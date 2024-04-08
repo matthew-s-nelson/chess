@@ -71,7 +71,7 @@ public class WSServer {
       session.getRemote().sendString(msgToSend);
 
       AuthData authData = userService.getUser(authToken);
-      String broadcastMessage = String.format("%s joined the game", authData.username());
+      String broadcastMessage = String.format("%s joined the game as %s", authData.username(), joinRequest.getColor());
       connections.broadcast(broadcastMessage, authToken, gameID);
 
     } catch (DataAccessException e) {

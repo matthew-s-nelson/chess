@@ -130,7 +130,7 @@ public class ServerFacade {
       throw new ResponseException(response.get("message"));
     }
     wsCommunicator = new WSClient(baseURL, chessBoard);
-    JoinGameRequest joinRequest = new JoinGameRequest(authToken, Integer.parseInt(gameID));
+    JoinGameRequest joinRequest = new JoinGameRequest(authToken, Integer.parseInt(gameID), playerColor);
     wsCommunicator.send(new Gson().toJson(joinRequest));
   }
 
