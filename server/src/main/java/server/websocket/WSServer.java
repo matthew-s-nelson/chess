@@ -65,17 +65,23 @@ public class WSServer {
     int gameID =joinRequest.getGameID();
     try {
       gameService.checkIfUserInGame(authToken, gameID);
-      if (joinRequest.getColor() == null) {
-        joinRequest.setColor("OBSERVER");
-      }
+      AuthData authData = userService.getUser(authToken);
       GameData gameData = gameService.getGameData(gameID);
+
+      if ((joinRequest.getColor() == ChessGame.TeamColor.WHITE && !Objects.equals(authData.username(), gameData.whiteUsername()))
+              || (joinRequest.getColor() == ChessGame.TeamColor.BLACK && !Objects.equals(authData.username(), gameData.blackUsername()))
+              || joinRequest.getColor() == null) {
+        ErrorResponse errorResponse = new ErrorResponse("That team slot is already taken");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        return;
+      }
+
       connections.addUserToGame(joinRequest.getGameID(), joinRequest.getAuthString());
       LoadGameResponse loadGameResponse = new LoadGameResponse(gameData.game());
       String msgToSend = new Gson().toJson(loadGameResponse);
 
       session.getRemote().sendString(msgToSend);
 
-      AuthData authData = userService.getUser(authToken);
       String broadcastMessage = String.format("%s joined the game as %s", authData.username(), joinRequest.getColor());
       connections.broadcast(broadcastMessage, authToken, gameID);
 
@@ -91,7 +97,7 @@ public class WSServer {
     JoinObserverRequest joinObserverRequest = new Gson().fromJson(msg, JoinObserverRequest.class);
     try {
       AuthData authData = userService.getUser(joinObserverRequest.getAuthString());
-      GameData gameData=gameService.getGameData(joinObserverRequest.getGameID());
+      GameData gameData = gameService.getGameData(joinObserverRequest.getGameID());
       connections.addUserToGame(joinObserverRequest.getGameID(), joinObserverRequest.getAuthString());
       LoadGameResponse loadGameResponse=new LoadGameResponse(gameData.game());
       String msgToSend=new Gson().toJson(loadGameResponse);

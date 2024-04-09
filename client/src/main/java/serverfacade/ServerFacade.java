@@ -1,6 +1,7 @@
 package serverfacade;
 
 import WebSocket.WSClient;
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
@@ -13,10 +14,7 @@ import webSocketMessages.userCommands.LeaveRequest;
 import webSocketMessages.userCommands.MakeMoveRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static webSocketMessages.userCommands.MakeMoveRequest.getEndPos;
 import static webSocketMessages.userCommands.MakeMoveRequest.getStartPos;
@@ -129,7 +127,13 @@ public class ServerFacade {
       throw new ResponseException(response.get("message"));
     }
     wsCommunicator = new WSClient(baseURL, chessBoard);
-    JoinGameRequest joinRequest = new JoinGameRequest(authToken, Integer.parseInt(gameID), playerColor);
+    ChessGame.TeamColor teamColor = null;
+    if (Objects.equals(playerColor, "WHITE")) {
+      teamColor = ChessGame.TeamColor.WHITE;
+    } else if (Objects.equals(playerColor, "BLACK")) {
+      teamColor = ChessGame.TeamColor.BLACK;
+    }
+    JoinGameRequest joinRequest = new JoinGameRequest(authToken, Integer.parseInt(gameID), teamColor);
     wsCommunicator.send(new Gson().toJson(joinRequest));
   }
 
