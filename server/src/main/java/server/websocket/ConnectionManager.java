@@ -12,10 +12,7 @@ import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ConnectionManager {
   public static Map<String, Session> connections;
@@ -56,7 +53,7 @@ public class ConnectionManager {
     NotificationResponse notificationResponse = new NotificationResponse(message);
     String gsonMessage = new Gson().toJson(notificationResponse);
     for (String participant: gameParticipants) {
-      if (participant != authToken) {
+      if (!Objects.equals(participant, authToken)) {
         Session participantSession = this.getSession(participant);
         participantSession.getRemote().sendString(gsonMessage);
       }

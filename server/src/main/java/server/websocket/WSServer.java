@@ -110,7 +110,7 @@ public class WSServer {
     try {
       GameData gameData = gameService.getGameData(makeMoveRequest.getGameID());
       ChessGame game = gameData.game();
-      ChessMove move = new ChessMove(makeMoveRequest.getStartPos(), makeMoveRequest.getEndPos(), null);
+      ChessMove move = makeMoveRequest.getMove();
       game.makeMove(move);
       gameService.updateGame(gameData.gameID(), game);
 

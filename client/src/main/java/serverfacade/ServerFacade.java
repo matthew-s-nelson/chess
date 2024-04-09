@@ -1,6 +1,8 @@
 package serverfacade;
 
 import WebSocket.WSClient;
+import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -15,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static webSocketMessages.userCommands.MakeMoveRequest.getEndPos;
+import static webSocketMessages.userCommands.MakeMoveRequest.getStartPos;
 
 public class ServerFacade {
   private String authToken;
@@ -135,7 +140,8 @@ public class ServerFacade {
   }
 
   public void makeMove(String startPos, String endPos, int gameID) throws Exception {
-    MakeMoveRequest makeMoveRequest = new MakeMoveRequest(authToken, startPos, endPos, gameID);
+    ChessMove move = new ChessMove(getStartPos(startPos), getEndPos(endPos), null);
+    MakeMoveRequest makeMoveRequest = new MakeMoveRequest(authToken, move, gameID);
     wsCommunicator.send(new Gson().toJson(makeMoveRequest));
   }
 

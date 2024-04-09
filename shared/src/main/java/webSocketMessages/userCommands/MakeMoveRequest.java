@@ -1,24 +1,23 @@
 package webSocketMessages.userCommands;
 
+import chess.ChessMove;
 import chess.ChessPosition;
 
 public class MakeMoveRequest extends UserGameCommand {
-  String startPos;
-  String endPos;
+  ChessMove move;
   int gameID;
-  public MakeMoveRequest(String authToken, String startPos, String endPos, int gameID) {
+  public MakeMoveRequest(String authToken, ChessMove move, int gameID) {
     super(authToken);
     this.commandType = CommandType.MAKE_MOVE;
-    this.startPos = startPos;
-    this.endPos = endPos;
+    this.move = move;
     this.gameID = gameID;
   }
 
-  public ChessPosition getStartPos() {
+  public static ChessPosition getStartPos(String startPos) {
     return new ChessPosition(parseRow(startPos.charAt(1)), parseColumn(startPos.charAt(0)));
   }
 
-  public ChessPosition getEndPos() {
+  public static ChessPosition getEndPos(String endPos) {
     return new ChessPosition(parseRow(endPos.charAt(1)), parseColumn(endPos.charAt(0)));
   }
 
@@ -26,7 +25,11 @@ public class MakeMoveRequest extends UserGameCommand {
     return gameID;
   }
 
-  public int parseColumn(char col) {
+  public ChessMove getMove() {
+    return move;
+  }
+
+  public static int parseColumn(char col) {
     switch (col) {
       case 'A':
         return 1;
@@ -48,7 +51,7 @@ public class MakeMoveRequest extends UserGameCommand {
     return 0;
   }
 
-  public int parseRow(char row) {
+  public static int parseRow(char row) {
     switch (row) {
       case '1':
         return 1;
