@@ -71,7 +71,10 @@ public class ConnectionManager {
     String gsonMessage = new Gson().toJson(loadGameResponse);
     Collection<String> gameParticipants = getGameParticipants(gameID);
     for (String participant: gameParticipants) {
-      getSession(participant).getRemote().sendString(gsonMessage);
+      Session participantSession = getSession(participant);
+      if (participantSession.isOpen()) {
+        participantSession.getRemote().sendString(gsonMessage);
+      }
     }
   }
 

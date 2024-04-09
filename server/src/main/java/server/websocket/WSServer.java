@@ -86,7 +86,9 @@ public class WSServer {
               || (joinRequest.getColor() == ChessGame.TeamColor.BLACK && !Objects.equals(authData.username(), gameData.blackUsername()))
               || joinRequest.getColor() == null) {
         ErrorResponse errorResponse = new ErrorResponse("That team slot is already taken");
-        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        if (session.isOpen()) {
+          session.getRemote().sendString(new Gson().toJson(errorResponse));
+        }
         return;
       }
 
@@ -94,7 +96,9 @@ public class WSServer {
       LoadGameResponse loadGameResponse = new LoadGameResponse(gameData.game());
       String msgToSend = new Gson().toJson(loadGameResponse);
 
-      session.getRemote().sendString(msgToSend);
+      if (session.isOpen()) {
+        session.getRemote().sendString(msgToSend);
+      }
 
       String broadcastMessage = String.format("%s joined the game as %s", authData.username(), joinRequest.getColor());
       connections.broadcast(broadcastMessage, authToken, gameID);
@@ -115,7 +119,9 @@ public class WSServer {
       connections.addUserToGame(joinObserverRequest.getGameID(), joinObserverRequest.getAuthString());
       LoadGameResponse loadGameResponse=new LoadGameResponse(gameData.game());
       String msgToSend=new Gson().toJson(loadGameResponse);
-      session.getRemote().sendString(msgToSend);
+      if (session.isOpen()) {
+        session.getRemote().sendString(msgToSend);
+      }
 
       String broadcastMessage = String.format("%s joined the game as an OBSERVER", authData.username());
       connections.broadcast(broadcastMessage, joinObserverRequest.getAuthString(), gameData.gameID());
