@@ -16,7 +16,7 @@ import java.util.*;
 
 public class ConnectionManager {
   public static Map<String, Session> connections;
-  public static Map<Integer, Set<String>> gameMap;
+  public static Map<Integer, Collection<String>> gameMap;
 
   public ConnectionManager() {
     connections = new HashMap<>();
@@ -32,24 +32,24 @@ public class ConnectionManager {
   }
 
   public void addUserToGame(int gameID, String authToken) {
-    Set<String> users = gameMap.get(gameID);
+    Collection<String> users = gameMap.get(gameID);
     if (users == null) {
-      users = new HashSet<>();
+      users = new ArrayList<>();
       gameMap.put(gameID, users);
     }
     users.add(authToken);
   }
 
-  public Map<Integer, Set<String>> getGameMap() {
+  public Map<Integer, Collection<String>> getGameMap() {
     return gameMap;
   }
 
-  public Set<String> getGameParticipants(int gameID) {
+  public Collection<String> getGameParticipants(int gameID) {
     return gameMap.get(gameID);
   }
 
   public void broadcast(String message, String authToken, int gameID) throws DataAccessException, IOException {
-    Set<String> gameParticipants = this.getGameParticipants(gameID);
+    Collection<String> gameParticipants = this.getGameParticipants(gameID);
     NotificationResponse notificationResponse = new NotificationResponse(message);
     String gsonMessage = new Gson().toJson(notificationResponse);
     for (String participant: gameParticipants) {
@@ -67,14 +67,14 @@ public class ConnectionManager {
   public void loadGameForAll(int gameID, ChessGame game) throws IOException {
     LoadGameResponse loadGameResponse = new LoadGameResponse(game);
     String gsonMessage = new Gson().toJson(loadGameResponse);
-    Set<String> gameParticipants = getGameParticipants(gameID);
+    Collection<String> gameParticipants = getGameParticipants(gameID);
     for (String participant: gameParticipants) {
       getSession(participant).getRemote().sendString(gsonMessage);
     }
   }
 
   public void deletePlayerFromGame(String authToken, int gameID) {
-    Set<String> users = gameMap.get(gameID);
+    Collection<String> users = gameMap.get(gameID);
     users.remove(authToken);
     connections.remove(authToken);
   }

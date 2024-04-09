@@ -6,6 +6,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.gson;
@@ -57,6 +58,13 @@ public class WSServer {
     } else {
 //      Connection.sendError(session.getRemote(), "unknown user");
     }
+  }
+
+  @OnWebSocketError
+  public void onError(Session session, Throwable throwable) {
+    // Handle the error here
+    System.err.println("WebSocket error occurred: " + throwable.getMessage());
+    throwable.printStackTrace();
   }
 
   public void join(Session session, String msg) throws IOException {
@@ -159,6 +167,20 @@ public class WSServer {
   }
 
   public void resign(Session session, String msg) {
+    ResignRequest resignRequest = new Gson().fromJson(msg, ResignRequest.class);
+    try {
+      GameData gameData = gameService.getGameData(resignRequest.getGameID());
+      AuthData authData = userService.getUser(resignRequest.getAuthString());
+      ChessGame game = gameData.game();
+      game.setTeamTurn(null);
+      gameService.updateGame(gameData.gameID(), game);
+      String msgToSend = String.format("%s resigned from the game.", authData.username());
+      connections.broadcast(msgToSend, null, gameData.gameID());
+    } catch (DataAccessException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

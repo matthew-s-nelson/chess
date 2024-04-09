@@ -214,7 +214,9 @@ public class Menu {
         inGameScreen(out, scanner);
         break;
       case 5:
-        return 0;
+        serverFacade.resign(currentGameID);
+        inGameScreen(out, scanner);
+        break;
       case 6:
 //        chessBoard.highlightLegalMoves(playerColor);
         break;

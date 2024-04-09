@@ -8,10 +8,7 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import ui.ChessBoard;
-import webSocketMessages.userCommands.JoinGameRequest;
-import webSocketMessages.userCommands.JoinObserverRequest;
-import webSocketMessages.userCommands.LeaveRequest;
-import webSocketMessages.userCommands.MakeMoveRequest;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -152,5 +149,10 @@ public class ServerFacade {
   public void leave(int gameID) throws Exception {
     LeaveRequest leaveRequest = new LeaveRequest(authToken, gameID);
     wsCommunicator.send(new Gson().toJson(leaveRequest));
+  }
+
+  public void resign(int currentGameID) throws Exception {
+    ResignRequest resignRequest = new ResignRequest(authToken, currentGameID);
+    wsCommunicator.send(new Gson().toJson(resignRequest));
   }
 }
