@@ -135,14 +135,22 @@ public class WSServer {
     MakeMoveRequest makeMoveRequest = new Gson().fromJson(msg, MakeMoveRequest.class);
     try {
       GameData gameData = gameService.getGameData(makeMoveRequest.getGameID());
+      AuthData authData = userService.getUser(makeMoveRequest.getAuthString());
       ChessGame game = gameData.game();
       ChessMove move = makeMoveRequest.getMove();
-      game.makeMove(move);
+
+      if ((Objects.equals(gameData.whiteUsername(), authData.username()) && game.getTeamTurn() == ChessGame.TeamColor.WHITE)
+            || (Objects.equals(gameData.blackUsername(), authData.username()) && game.getTeamTurn() == ChessGame.TeamColor.BLACK)){
+        game.makeMove(move);
+      } else {
+        ErrorResponse errorResponse = new ErrorResponse("It is not your turn");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        return;
+      }
       gameService.updateGame(gameData.gameID(), game);
 
       connections.loadGameForAll(gameData.gameID(), game);
 
-      AuthData authData = userService.getUser(makeMoveRequest.getAuthString());
       String msgToSend = String.format("%s made a move.", authData.username());
       connections.broadcast(msgToSend, makeMoveRequest.getAuthString(), gameData.gameID());
     } catch (DataAccessException e) {
