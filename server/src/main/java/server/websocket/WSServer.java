@@ -16,6 +16,7 @@ import webSocketMessages.serverMessages.ErrorResponse;
 import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
 import webSocketMessages.userCommands.JoinGameRequest;
+import webSocketMessages.userCommands.JoinObserverRequest;
 import webSocketMessages.userCommands.MakeMoveRequest;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -87,8 +88,22 @@ public class WSServer {
     }
   }
 
-  public void observe(Session session, String msg) {
+  public void observe(Session session, String msg) throws IOException {
+    JoinObserverRequest joinObserverRequest = new Gson().fromJson(msg, JoinObserverRequest.class);
+    try {
+      AuthData authData = userService.getUser(joinObserverRequest.getAuthString());
+      GameData gameData=gameService.getGameData(joinObserverRequest.getGameID());
+      connections.addUserToGame(joinObserverRequest.getGameID(), joinObserverRequest.getAuthString());
+      LoadGameResponse loadGameResponse=new LoadGameResponse(gameData.game());
+      String msgToSend=new Gson().toJson(loadGameResponse);
+      session.getRemote().sendString(msgToSend);
 
+      String broadcastMessage = String.format("%s joined the game as an OBSERVER", authData.username());
+      connections.broadcast(broadcastMessage, joinObserverRequest.getAuthString(), gameData.gameID());
+    } catch (DataAccessException e) {
+      ErrorResponse errorResponse = new ErrorResponse("Error");
+      session.getRemote().sendString(new Gson().toJson(errorResponse));
+    }
   }
 
   public void move(Session session, String msg) {

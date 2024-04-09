@@ -234,8 +234,7 @@ public class Menu {
     String gameID = scanner.next();
     try {
       chessBoard = new ChessBoard(1);
-      serverFacade.joinGame(null, gameID, chessBoard);
-//      chessBoard.drawBoard(null);
+      serverFacade.joinObserver(gameID, chessBoard);
     } catch (ResponseException | IOException e) {
       printError(out, e);
     } catch (Exception e) {
