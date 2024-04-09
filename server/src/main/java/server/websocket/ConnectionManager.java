@@ -55,7 +55,9 @@ public class ConnectionManager {
     for (String participant: gameParticipants) {
       if (!Objects.equals(participant, authToken)) {
         Session participantSession = this.getSession(participant);
-        participantSession.getRemote().sendString(gsonMessage);
+        if (participantSession.isOpen()) {
+          participantSession.getRemote().sendString(gsonMessage);
+        }
       }
     }
   }

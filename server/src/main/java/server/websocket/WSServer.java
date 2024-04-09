@@ -6,6 +6,7 @@ import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -65,6 +66,11 @@ public class WSServer {
     // Handle the error here
     System.err.println("WebSocket error occurred: " + throwable.getMessage());
     throwable.printStackTrace();
+  }
+
+  @OnWebSocketClose
+  public void onClose(int statusCode, String reason) {
+
   }
 
   public void join(Session session, String msg) throws IOException {
