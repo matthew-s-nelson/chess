@@ -99,7 +99,7 @@ public class ChessBoard {
   }
 
   public void drawChessPiece(PrintStream out, int rowNum, int colNum) {
-    chess.ChessPiece piece = board.getPiece(new ChessPosition(rowNum, colNum));
+    chess.ChessPiece piece = board.getPiece(new ChessPosition(rowNum, Math.abs(9-colNum)));
     chess.ChessPiece.PieceType pieceType;
     if (piece != null){
        pieceType = piece.getPieceType();

@@ -106,7 +106,7 @@ public class WSServer {
     }
   }
 
-  public void move(Session session, String msg) {
+  public void move(Session session, String msg) throws IOException {
     MakeMoveRequest makeMoveRequest = new Gson().fromJson(msg, MakeMoveRequest.class);
     try {
       GameData gameData = gameService.getGameData(makeMoveRequest.getGameID());
@@ -123,9 +123,11 @@ public class WSServer {
     } catch (DataAccessException e) {
 
     } catch (InvalidMoveException e) {
-      throw new RuntimeException(e);
+      ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+      session.getRemote().sendString(new Gson().toJson(errorResponse));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+      session.getRemote().sendString(new Gson().toJson(errorResponse));
     }
   }
 

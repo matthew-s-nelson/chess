@@ -2,6 +2,7 @@ package WebSocket;
 
 import com.google.gson.Gson;
 import ui.ChessBoard;
+import webSocketMessages.serverMessages.ErrorResponse;
 import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -32,7 +33,7 @@ public class WSClient extends Endpoint {
               loadGame(message);
               break;
             case ERROR:
-              error();
+              error(message);
             case NOTIFICATION:
               this.notify(message);
           }
@@ -55,8 +56,9 @@ public class WSClient extends Endpoint {
     chessBoard.drawBoard(board);
   }
 
-  private void error() {
-
+  private void error(String message) {
+    ErrorResponse errorResponse = new Gson().fromJson(message, ErrorResponse.class);
+    chessBoard.notify(errorResponse.getMessage());
   }
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
