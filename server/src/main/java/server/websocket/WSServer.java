@@ -9,21 +9,20 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.gson;
+import service.GameJoinException;
 import service.GameService;
 import service.UserService;
 import spark.Spark;
 import webSocketMessages.serverMessages.ErrorResponse;
 import webSocketMessages.serverMessages.LoadGameResponse;
 import webSocketMessages.serverMessages.NotificationResponse;
-import webSocketMessages.userCommands.JoinGameRequest;
-import webSocketMessages.userCommands.JoinObserverRequest;
-import webSocketMessages.userCommands.MakeMoveRequest;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @WebSocket
@@ -132,11 +131,28 @@ public class WSServer {
   }
 
   public void leave(Session session, String msg) {
-
+    LeaveRequest leaveRequest = new Gson().fromJson(msg, LeaveRequest.class);
+    try {
+      GameData gameData = gameService.getGameData(leaveRequest.getGameID());
+      AuthData authData = userService.getUser(leaveRequest.getAuthString());
+      String color = "";
+      if (Objects.equals(gameData.whiteUsername(), authData.username())) {
+        color = "WHITE";
+      } else if (Objects.equals(gameData.blackUsername(), authData.username())){
+        color = "BLACK";
+      }
+      gameService.leaveGame(new server.JoinGameRequest(color, gameData.gameID()));
+      connections.deletePlayerFromGame(authData.authToken(), gameData.gameID());
+      String msgToSend = String.format("%s left the game.", authData.username());
+      connections.broadcast(msgToSend, authData.authToken(), gameData.gameID());
+    } catch (DataAccessException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void resign(Session session, String msg) {
-
   }
 
 }

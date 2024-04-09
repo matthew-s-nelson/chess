@@ -188,7 +188,7 @@ public class Menu {
       chessBoard = new ChessBoard(playerColor);
       serverFacade.joinGame(selectColor(playerColor), gameID, chessBoard);
       out.println("IT WORKED");
-      inGameScreen(out, scanner, playerColor);
+      inGameScreen(out, scanner);
     } catch (ResponseException | IOException e) {
       printError(out, e);
     } catch (Exception e) {
@@ -196,7 +196,7 @@ public class Menu {
     }
   }
 
-  public int inGameScreen(PrintStream out, Scanner scanner, int playerColor) {
+  public int inGameScreen(PrintStream out, Scanner scanner) throws Exception {
     inGameOptions(out);
     int optionSelected = scanner.nextInt();
 
@@ -207,9 +207,11 @@ public class Menu {
       case 2:
         chessBoard.drawBoard(null);
       case 3:
-        return 0;
+        serverFacade.leave(currentGameID);
+        break;
       case 4:
         makeMoveScreen(out, scanner);
+        inGameScreen(out, scanner);
         break;
       case 5:
         return 0;

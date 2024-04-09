@@ -75,4 +75,10 @@ public class ConnectionManager {
       getSession(participant).getRemote().sendString(gsonMessage);
     }
   }
+
+  public void deletePlayerFromGame(String authToken, int gameID) {
+    Set<String> users = gameMap.get(gameID);
+    users.remove(authToken);
+    connections.remove(authToken);
+  }
 }

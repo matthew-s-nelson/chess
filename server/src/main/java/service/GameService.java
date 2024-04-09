@@ -58,6 +58,14 @@ public class GameService {
     throw new GameJoinException("Game already taken");
   }
 
+  public void leaveGame(JoinGameRequest joinGameRequest) throws DataAccessException {
+    if (joinGameRequest.playerColor() == "BLACK") {
+      gameDAO.insertBlackUsername(joinGameRequest.gameID(), null);
+    } else if (joinGameRequest.playerColor() == "WHITE") {
+      gameDAO.insertWhiteUsername(joinGameRequest.gameID(), null);
+    }
+  }
+
   public boolean checkIfUserInGame(String authToken, int gameID) throws DataAccessException {
     GameData game = gameDAO.selectGame(gameID);
     AuthData auth = authDAO.getAuth(authToken);

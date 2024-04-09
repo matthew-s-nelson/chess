@@ -7,6 +7,7 @@ import model.GameData;
 import ui.ChessBoard;
 import webSocketMessages.userCommands.JoinGameRequest;
 import webSocketMessages.userCommands.JoinObserverRequest;
+import webSocketMessages.userCommands.LeaveRequest;
 import webSocketMessages.userCommands.MakeMoveRequest;
 
 import java.io.IOException;
@@ -136,5 +137,10 @@ public class ServerFacade {
   public void makeMove(String startPos, String endPos, int gameID) throws Exception {
     MakeMoveRequest makeMoveRequest = new MakeMoveRequest(authToken, startPos, endPos, gameID);
     wsCommunicator.send(new Gson().toJson(makeMoveRequest));
+  }
+
+  public void leave(int gameID) throws Exception {
+    LeaveRequest leaveRequest = new LeaveRequest(authToken, gameID);
+    wsCommunicator.send(new Gson().toJson(leaveRequest));
   }
 }
