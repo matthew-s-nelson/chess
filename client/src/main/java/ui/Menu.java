@@ -42,10 +42,6 @@ public class Menu {
           menuNum = loggedInMenu(out, scanner);
           break;
       }
-//      System.out.printf("Type your numbers%n>>> ");
-
-//      line = scanner.nextLine();
-//      System.out.println(line);
     }
     System.out.println("Goodbye!");
   }
@@ -187,7 +183,6 @@ public class Menu {
     try {
       chessBoard = new ChessBoard(playerColor);
       serverFacade.joinGame(selectColor(playerColor), gameID, chessBoard);
-      out.println("IT WORKED");
       inGameScreen(out, scanner);
     } catch (ResponseException | IOException e) {
       printError(out, e);

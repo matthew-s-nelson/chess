@@ -20,7 +20,6 @@ public class WSClient extends Endpoint {
     this.chessBoard = chessBoard;
 
     url = url.replace("http", "ws") + "connect";
-    System.out.println(url);
     URI uri = new URI(url);
     WebSocketContainer container = ContainerProvider.getWebSocketContainer();
     this.session = container.connectToServer(this, uri);
