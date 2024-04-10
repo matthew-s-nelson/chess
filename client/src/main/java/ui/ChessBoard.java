@@ -13,8 +13,8 @@ import java.util.Collection;
 import static ui.EscapeSequences.*;
 
 public class ChessBoard {
-  private final String BORDER_SPACE = " ";
-  private final String EMPTY_SQUARE = "   ";
+  private static final String BORDER_SPACE = " ";
+  private static final String EMPTY_SQUARE = "   ";
   private chess.ChessBoard board;
   private int playerColor;
   private PrintStream printStream;
