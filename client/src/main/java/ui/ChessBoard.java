@@ -91,7 +91,7 @@ public class ChessBoard {
       ChessPosition posToCheck = new ChessPosition(rowNum, Math.abs(9-col));
       if ((col + rowNum) % 2 == 1) {
         if (legalMoves != null && legalMoves.contains(posToCheck)) {
-          out.print(SET_BG_COLOR_YELLOW);
+          out.print(SET_BG_COLOR_LIGHT_YELLOW);
         } else {
           out.print(SET_BG_COLOR_WHITE);
         }
