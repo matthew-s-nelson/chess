@@ -68,8 +68,6 @@ public class WSClient extends Endpoint {
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
   public void onOpen(Session session, EndpointConfig endpointConfig) {}
-  public void onClose(Session session, EndpointConfig endpointConfig) {}
-  public void onError(Session session, EndpointConfig endpointConfig) {}
 
   public void highlightMoves() {
     chessBoard.highlightLegalMoves(game);
