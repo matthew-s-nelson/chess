@@ -28,7 +28,6 @@ public class WSClient extends Endpoint {
       public void onMessage(String message) {
         try {
           ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-//          observer.notify(serverMessage);
           switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME:
               loadGame(message);
@@ -67,7 +66,6 @@ public class WSClient extends Endpoint {
   }
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
-  public void onOpen(Session session, EndpointConfig endpointConfig) {}
 
   public void highlightMoves() {
     chessBoard.highlightLegalMoves(game);
