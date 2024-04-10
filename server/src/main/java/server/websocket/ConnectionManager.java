@@ -40,10 +40,6 @@ public class ConnectionManager {
     users.add(authToken);
   }
 
-  public Map<Integer, Collection<String>> getGameMap() {
-    return gameMap;
-  }
-
   public Collection<String> getGameParticipants(int gameID) {
     return gameMap.get(gameID);
   }
@@ -60,10 +56,6 @@ public class ConnectionManager {
         }
       }
     }
-  }
-
-  public void remove(String authToken) {
-    connections.remove(authToken);
   }
 
   public void loadGameForAll(int gameID, ChessGame game) throws IOException {

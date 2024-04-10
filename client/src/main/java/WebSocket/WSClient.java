@@ -25,6 +25,7 @@ public class WSClient extends Endpoint {
     this.session = container.connectToServer(this, uri);
 
     this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+      @Override
       public void onMessage(String message) {
         try {
           ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
@@ -75,5 +76,6 @@ public class WSClient extends Endpoint {
   public void onOpen(Session session, EndpointConfig config) {
     System.out.print("Websocket session open");
   }
+
 }
 

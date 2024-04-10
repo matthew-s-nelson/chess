@@ -68,12 +68,7 @@ public class HttpCommunicator {
         return new Gson().fromJson(inputStreamReader, Map.class);
       }
     }
-    else {
-
-      InputStream responseBody = connection.getErrorStream();
-
-      return null;
-    }
+    return null;
   }
 
   public Map<String, String> doDelete(String urlString, Map<String, String> body, String authToken) throws IOException, ResponseException {
@@ -100,8 +95,8 @@ public class HttpCommunicator {
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
       try (InputStream responseBody = connection.getInputStream()) {
-        InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-        return new Gson().fromJson(inputStreamReader, Map.class);
+        InputStreamReader inputStreamRead = new InputStreamReader(responseBody);
+        return new Gson().fromJson(inputStreamRead, Map.class);
       }
     }
     else {

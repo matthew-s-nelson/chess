@@ -135,7 +135,7 @@ public class SqlGameDAO implements GameDAO{
 
         int rowsAffected = preparedStatement.executeUpdate();
         if (rowsAffected == 0) {
-          throw new DataAccessException("No game exists with this ID;");
+          throw new DataAccessException("There is no game with this ID;");
         }
       } catch (SQLException sql) {
         throw new RuntimeException(sql);

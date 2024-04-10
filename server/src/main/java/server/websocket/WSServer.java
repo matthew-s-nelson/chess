@@ -25,12 +25,6 @@ public class WSServer {
   private final GameService gameService = new GameService(new SqlUserDAO(), new SqlAuthDAO(), new SqlGameDAO());
   private final UserService userService = new UserService(new SqlUserDAO(), new SqlAuthDAO());
 
-//  public static void main(String[] args) {
-//    Spark.port(8080);
-//    Spark.webSocket("/connect", WSServer.class);
-//    Spark.get("/echo/:msg", (req, res) -> "HTTP response: " + req.params(":msg"));
-//  }
-
   @OnWebSocketMessage
   public void onMessage(Session session, String msg) throws Exception {
     UserGameCommand command =new Gson().fromJson(msg, UserGameCommand.class);
