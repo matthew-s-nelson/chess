@@ -195,7 +195,19 @@ public class WSServer {
     try {
       GameData gameData = gameService.getGameData(resignRequest.getGameID());
       AuthData authData = userService.getUser(resignRequest.getAuthString());
+      if (!Objects.equals(gameData.whiteUsername(), authData.username())
+              && !Objects.equals(gameData.blackUsername(), authData.username())) {
+        ErrorResponse errorResponse = new ErrorResponse("You can't resign as an observer");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        return;
+      }
+
       ChessGame game = gameData.game();
+      if (game.getTeamTurn() == ChessGame.TeamColor.FINISHED) {
+        ErrorResponse errorResponse = new ErrorResponse("This game is already over.");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        return;
+      }
       game.setTeamTurn(ChessGame.TeamColor.FINISHED);
       gameService.updateGame(gameData.gameID(), game);
       String msgToSend = String.format("%s resigned from the game.", authData.username());
