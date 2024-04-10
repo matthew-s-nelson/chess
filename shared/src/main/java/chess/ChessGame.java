@@ -65,6 +65,15 @@ public class ChessGame {
         return validMoves;
     }
 
+    public Collection<ChessMove> getAllValidMoves() {
+        Collection<ChessPosition> piecePositions = board.getAllTeamPiecePos(getTeamTurn());
+        Collection<ChessMove> allValidMoves = new ArrayList<>();
+        for (ChessPosition piecePos: piecePositions) {
+            allValidMoves.addAll(validMoves(piecePos));
+        }
+        return allValidMoves;
+    }
+
     /**
      * Makes a move in a chess game
      *

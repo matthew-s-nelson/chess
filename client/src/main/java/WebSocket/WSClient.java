@@ -55,7 +55,7 @@ public class WSClient extends Endpoint {
   private void loadGame(String message) {
     LoadGameResponse loadGameResponse = new Gson().fromJson(message, LoadGameResponse.class);
     game = loadGameResponse.game();
-    chessBoard.drawBoard(game.getBoard());
+    chessBoard.drawBoard(game.getBoard(), null);
   }
 
   private void error(String message) {
@@ -64,12 +64,16 @@ public class WSClient extends Endpoint {
   }
 
   public void redrawBoard(){
-    chessBoard.drawBoard(game.getBoard());
+    chessBoard.drawBoard(game.getBoard(), null);
   }
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
   public void onOpen(Session session, EndpointConfig endpointConfig) {}
   public void onClose(Session session, EndpointConfig endpointConfig) {}
   public void onError(Session session, EndpointConfig endpointConfig) {}
+
+  public void highlightMoves() {
+    chessBoard.highlightLegalMoves(game);
+  }
 }
 

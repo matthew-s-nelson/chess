@@ -1,11 +1,14 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
@@ -21,14 +24,14 @@ public class ChessBoard {
   }
 
   // color key: 0 = white, 1 = black
-  public void drawBoard(chess.ChessBoard board) {
+  public void drawBoard(chess.ChessBoard board, Collection<ChessPosition> legalMoves) {
     if (board != null) {
       this.board = board;
     }
     var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     printStream = out;
     drawHeader(out, playerColor-1);
-    drawRows(out, playerColor-1);
+    drawRows(out, playerColor-1, legalMoves);
     drawHeader(out, playerColor-1);
 
     out.println();
@@ -53,14 +56,14 @@ public class ChessBoard {
     out.println(RESET_BG_COLOR);
   }
 
-  public void drawRows(PrintStream out, int color) {
+  public void drawRows(PrintStream out, int color, Collection<ChessPosition> legalMoves) {
     int[] startEnd = this.setStartAndEnd(color);
     int row = startEnd[0];
     int end = startEnd[1];
     while (row != end) {
       out.print(SET_BG_COLOR_BLACK);
       drawSideHeader(out, row);
-      drawRowSquares(out, row, color);
+      drawRowSquares(out, row, color, legalMoves);
       drawSideHeader(out, row);
       out.println(RESET_BG_COLOR);
       row = incrementOrDecrement(color, row);
@@ -74,7 +77,7 @@ public class ChessBoard {
     out.print(BORDER_SPACE);
   }
 
-  public void drawRowSquares(PrintStream out, int rowNum, int color) {
+  public void drawRowSquares(PrintStream out, int rowNum, int color, Collection<ChessPosition> legalMoves) {
     int col;
     int end;
     if (color == 1) {
@@ -85,10 +88,19 @@ public class ChessBoard {
       end = 0;
     }
     while (col != end) {
+      ChessPosition posToCheck = new ChessPosition(rowNum, Math.abs(9-col));
       if ((col + rowNum) % 2 == 1) {
-        out.print(SET_BG_COLOR_WHITE);
+        if (legalMoves != null && legalMoves.contains(posToCheck)) {
+          out.print(SET_BG_COLOR_YELLOW);
+        } else {
+          out.print(SET_BG_COLOR_WHITE);
+        }
       } else {
-        out.print(SET_BG_COLOR_DARK_GREY);
+        if (legalMoves != null && legalMoves.contains(posToCheck)) {
+          out.print(SET_BG_COLOR_YELLOW);
+        } else {
+          out.print(SET_BG_COLOR_DARK_GREY);
+        }
       }
       out.print(BORDER_SPACE);
       drawChessPiece(out, rowNum, col);
@@ -174,7 +186,12 @@ public class ChessBoard {
     printStream.println(message);
   }
 
-  public void highlightLegalMoves(int playerColor) {
-
+  public void highlightLegalMoves(ChessGame game) {
+    Collection<ChessMove> allValidMoves = game.getAllValidMoves();
+    Collection<ChessPosition> validEndingPos = new ArrayList<>();
+    for (ChessMove validMove: allValidMoves) {
+      validEndingPos.add(validMove.getEndPosition());
+    }
+    drawBoard(game.getBoard(), validEndingPos);
   }
 }

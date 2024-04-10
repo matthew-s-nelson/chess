@@ -159,4 +159,8 @@ public class ServerFacade {
   public void redraw() throws Exception {
     wsCommunicator.redrawBoard();
   }
+
+  public void highlightMoves() {
+    wsCommunicator.highlightMoves();
+  }
 }
