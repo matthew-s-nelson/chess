@@ -138,7 +138,11 @@ public class WSServer {
       AuthData authData = userService.getUser(makeMoveRequest.getAuthString());
       ChessGame game = gameData.game();
       ChessMove move = makeMoveRequest.getMove();
-
+      if (game.getTeamTurn() == ChessGame.TeamColor.FINISHED) {
+        ErrorResponse errorResponse = new ErrorResponse("Cannot make move. This game has ended.");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+        return;
+      }
       if ((Objects.equals(gameData.whiteUsername(), authData.username()) && game.getTeamTurn() == ChessGame.TeamColor.WHITE)
             || (Objects.equals(gameData.blackUsername(), authData.username()) && game.getTeamTurn() == ChessGame.TeamColor.BLACK)){
         game.makeMove(move);
@@ -192,7 +196,7 @@ public class WSServer {
       GameData gameData = gameService.getGameData(resignRequest.getGameID());
       AuthData authData = userService.getUser(resignRequest.getAuthString());
       ChessGame game = gameData.game();
-      game.setTeamTurn(null);
+      game.setTeamTurn(ChessGame.TeamColor.FINISHED);
       gameService.updateGame(gameData.gameID(), game);
       String msgToSend = String.format("%s resigned from the game.", authData.username());
       connections.broadcast(msgToSend, null, gameData.gameID());
