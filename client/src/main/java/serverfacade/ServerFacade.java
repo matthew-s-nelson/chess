@@ -155,4 +155,8 @@ public class ServerFacade {
     ResignRequest resignRequest = new ResignRequest(authToken, currentGameID);
     wsCommunicator.send(new Gson().toJson(resignRequest));
   }
+
+  public void redraw() throws Exception {
+    wsCommunicator.redrawBoard();
+  }
 }

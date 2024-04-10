@@ -174,7 +174,7 @@ public class ChessBoard {
     printStream.println(message);
   }
 
-//  public void highlightLegalMoves(int playerColor) {
-//    game.
-//  }
+  public void highlightLegalMoves(int playerColor) {
+
+  }
 }

@@ -1,5 +1,6 @@
 package WebSocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import ui.ChessBoard;
 import webSocketMessages.serverMessages.ErrorResponse;
@@ -13,6 +14,7 @@ import java.net.URI;
 public class WSClient extends Endpoint {
   private Session session;
   private ChessBoard chessBoard;
+  private ChessGame game;
 
   public WSClient(String url, ChessBoard chessBoard) throws Exception {
     this.chessBoard = chessBoard;
@@ -52,13 +54,17 @@ public class WSClient extends Endpoint {
 
   private void loadGame(String message) {
     LoadGameResponse loadGameResponse = new Gson().fromJson(message, LoadGameResponse.class);
-    chess.ChessBoard board = loadGameResponse.game().getBoard();
-    chessBoard.drawBoard(board);
+    game = loadGameResponse.game();
+    chessBoard.drawBoard(game.getBoard());
   }
 
   private void error(String message) {
     ErrorResponse errorResponse = new Gson().fromJson(message, ErrorResponse.class);
     chessBoard.notify(errorResponse.getMessage());
+  }
+
+  public void redrawBoard(){
+    chessBoard.drawBoard(game.getBoard());
   }
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}

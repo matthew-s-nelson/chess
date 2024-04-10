@@ -205,22 +205,22 @@ public class Menu {
         help(out);
         break;
       case 2:
-        chessBoard.drawBoard(null);
+        serverFacade.redraw();
+        break;
       case 3:
         serverFacade.leave(currentGameID);
-        break;
+        return 0;
       case 4:
         makeMoveScreen(out, scanner);
-        inGameScreen(out, scanner);
         break;
       case 5:
         serverFacade.resign(currentGameID);
-        inGameScreen(out, scanner);
         break;
       case 6:
 //        chessBoard.highlightLegalMoves(playerColor);
         break;
     }
+    inGameScreen(out, scanner);
     return 0;
   }
 
