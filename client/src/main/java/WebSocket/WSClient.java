@@ -70,5 +70,10 @@ public class WSClient extends Endpoint {
   public void highlightMoves() {
     chessBoard.highlightLegalMoves(game);
   }
+
+  @Override
+  public void onOpen(Session session, EndpointConfig config) {
+    System.out.print("Websocket session open");
+  }
 }
 

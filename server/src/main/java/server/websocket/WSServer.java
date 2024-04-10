@@ -10,22 +10,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import server.gson;
-import service.GameJoinException;
 import service.GameService;
 import service.UserService;
-import spark.Spark;
 import webSocketMessages.serverMessages.ErrorResponse;
 import webSocketMessages.serverMessages.LoadGameResponse;
-import webSocketMessages.serverMessages.NotificationResponse;
 import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @WebSocket
 public class WSServer {
