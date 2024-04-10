@@ -157,6 +157,15 @@ public class WSServer {
 
       String msgToSend = String.format("%s made a move.", authData.username());
       connections.broadcast(msgToSend, makeMoveRequest.getAuthString(), gameData.gameID());
+      if (game.isInCheckmate(game.getTeamTurn())) {
+        String checkmateMsg = String.format("%s won the game by checkmate.", authData.username());
+        connections.broadcast(checkmateMsg, null, gameData.gameID());
+        game.setTeamTurn(ChessGame.TeamColor.FINISHED);
+      } else if (game.isInStalemate(game.getTeamTurn())) {
+        String stalemateMessage = "Game has ended due to stalemate.";
+        connections.broadcast(stalemateMessage, null, gameData.gameID());
+        game.setTeamTurn(ChessGame.TeamColor.FINISHED);
+      }
     } catch (DataAccessException e) {
 
     } catch (InvalidMoveException e) {
