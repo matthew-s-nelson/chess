@@ -96,9 +96,6 @@ public class Server {
         }
     }
 
-    // If gameName already exists, throw an error
-    // List only gameID?
-    // Put empty string for other params of GameData instead of null?
     private Object createGame(Request req, Response res) {
         try {
             var authToken=req.headers("authorization");

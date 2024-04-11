@@ -151,6 +151,15 @@ public class WSServer {
         String stalemateMessage = "Game has ended due to stalemate.";
         connections.broadcast(stalemateMessage, null, gameData.gameID());
         game.setTeamTurn(ChessGame.TeamColor.FINISHED);
+      } else if (game.isInCheck(game.getTeamTurn())) {
+        String username = "";
+        if (game.getTeamTurn() == ChessGame.TeamColor.BLACK) {
+          username =gameData.blackUsername();
+        } else {
+          username = gameData.whiteUsername();
+        }
+        String checkMessage = String.format("%s is in check.", username);
+        connections.broadcast(checkMessage, null, gameData.gameID());
       }
     } catch (DataAccessException e) {
 
