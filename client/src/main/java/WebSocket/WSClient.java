@@ -74,7 +74,6 @@ public class WSClient extends Endpoint {
 
   @Override
   public void onOpen(Session session, EndpointConfig config) {
-    System.out.print("Websocket session open");
   }
 
 }

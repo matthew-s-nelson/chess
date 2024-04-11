@@ -234,6 +234,7 @@ public class Menu {
     try {
       chessBoard = new ChessBoard(1);
       serverFacade.joinObserver(gameID, chessBoard);
+      inGameScreen(out, scanner);
     } catch (ResponseException | IOException e) {
       printError(out, e);
     } catch (Exception e) {
