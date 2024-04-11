@@ -160,7 +160,12 @@ public class ServerFacade {
     wsCommunicator.redrawBoard();
   }
 
-  public void highlightMoves() {
-    wsCommunicator.highlightMoves();
+  public void highlightMoves(String pos) {
+    ChessPosition piecePos = MakeMoveRequest.getStartPos(pos);
+    wsCommunicator.highlightMoves(piecePos);
+  }
+
+  public void highlightAllMoves() {
+    wsCommunicator.highlightAllMoves();
   }
 }

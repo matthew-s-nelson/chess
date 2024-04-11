@@ -186,12 +186,23 @@ public class ChessBoard {
     printStream.println(message);
   }
 
-  public void highlightLegalMoves(ChessGame game) {
+  public void highlightLegalMoves(ChessPosition piecePos, ChessGame game) {
+    Collection<ChessMove> validMoves = game.validMoves(piecePos);
+    Collection<ChessPosition> validEndingPos = getEndingPosFromMoves(validMoves);
+    drawBoard(game.getBoard(), validEndingPos);
+  }
+
+  public void highlightAllLegalMoves(ChessGame game) {
     Collection<ChessMove> allValidMoves = game.getAllValidMoves();
+    Collection<ChessPosition> validEndingPos = getEndingPosFromMoves(allValidMoves);
+    drawBoard(game.getBoard(), validEndingPos);
+  }
+
+  public Collection<ChessPosition> getEndingPosFromMoves(Collection<ChessMove> moves) {
     Collection<ChessPosition> validEndingPos = new ArrayList<>();
-    for (ChessMove validMove: allValidMoves) {
+    for (ChessMove validMove: moves) {
       validEndingPos.add(validMove.getEndPosition());
     }
-    drawBoard(game.getBoard(), validEndingPos);
+    return validEndingPos;
   }
 }

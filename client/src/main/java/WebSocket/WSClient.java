@@ -1,6 +1,7 @@
 package WebSocket;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import ui.ChessBoard;
 import webSocketMessages.serverMessages.ErrorResponse;
@@ -68,8 +69,12 @@ public class WSClient extends Endpoint {
 
   public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
 
-  public void highlightMoves() {
-    chessBoard.highlightLegalMoves(game);
+  public void highlightMoves(ChessPosition piecePos) {
+    chessBoard.highlightLegalMoves(piecePos, game);
+  }
+
+  public void highlightAllMoves() {
+    chessBoard.highlightAllLegalMoves(game);
   }
 
   @Override

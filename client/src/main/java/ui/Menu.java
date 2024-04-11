@@ -212,7 +212,10 @@ public class Menu {
         serverFacade.resign(currentGameID);
         break;
       case 6:
-        serverFacade.highlightMoves();
+        selectPiece(out, scanner);
+        break;
+      case 7:
+        serverFacade.highlightAllMoves();
         break;
     }
     inGameScreen(out, scanner);
@@ -225,7 +228,14 @@ public class Menu {
     out.println("3. Leave");
     out.println("4. Make Move");
     out.println("5. Resign");
-    out.println("6. Highlight Legal moves");
+    out.println("6. Highlight legal moves for a piece.");
+    out.println("7. Highlight all Legal moves");
+  }
+
+  public void selectPiece(PrintStream out, Scanner scanner) {
+    out.println("What is the position of the piece whose valid moves you want to highlight?");
+    String pos = scanner.next();
+    serverFacade.highlightMoves(pos);
   }
 
   public void joinAsObserverScreen(PrintStream out, Scanner scanner) {
