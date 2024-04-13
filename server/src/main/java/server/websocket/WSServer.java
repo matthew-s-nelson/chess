@@ -102,6 +102,10 @@ public class WSServer {
     try {
       AuthData authData = userService.getUser(joinObserverRequest.getAuthString());
       GameData gameData = gameService.getGameData(joinObserverRequest.getGameID());
+      if (gameData.game() == null) {
+        ErrorResponse errorResponse = new ErrorResponse("Please enter a valid gameID.");
+        session.getRemote().sendString(new Gson().toJson(errorResponse));
+      }
       connections.addUserToGame(joinObserverRequest.getGameID(), joinObserverRequest.getAuthString());
       LoadGameResponse loadGameResponse=new LoadGameResponse(gameData.game());
       String msgToSend=new Gson().toJson(loadGameResponse);

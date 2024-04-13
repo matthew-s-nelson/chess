@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
@@ -48,29 +49,32 @@ public class Menu {
 
   public int startUpMenu(PrintStream out, Scanner scanner) {
     printStartUpMenu(out);
-    int response = scanner.nextInt();
+    String response = scanner.next();
     switch (response) {
-      case 1:
+      case "1":
         out.println("Login");
         boolean loggedIn = loginScreen(out, scanner);
         if (loggedIn) {
           return 2;
         }
         return 1;
-      case 2:
+      case "2":
         out.println("Register");
         boolean registered = registerScreen(out, scanner);
         if (registered) {
           return 2;
         }
         return 1;
-      case 3:
+      case "3":
         help(out);
         break;
-      case 4:
+      case "4":
         out.print("Goodbye!");
         System.exit(200);
         break;
+      default:
+        invalid(out);
+        return 1;
     }
     return 1;
   }
@@ -101,13 +105,13 @@ public class Menu {
 
   public int loggedInMenu(PrintStream out, Scanner scanner) {
     printLoggedInMenu(out);
-    int response = scanner.nextInt();
+    String response = scanner.next();
 
     switch (response) {
-      case 1:
+      case "1":
         help(out);
         return 2;
-      case 2:
+      case "2":
         out.println("Logging out");
         try{
           serverFacade.logout();
@@ -115,20 +119,28 @@ public class Menu {
           printError(out, res);
         }
         return 1;
-      case 3:
+      case "3":
         createGameScreen(out, scanner);
         return 2;
-      case 4:
+      case "4":
         listGames(out, scanner);
         return 2;
-      case 5:
+      case "5":
         joinGameScreen(out, scanner);
         return 2;
-      case 6:
+      case "6":
         joinAsObserverScreen(out, scanner);
         return 2;
+      default:
+        invalid(out);
+        return 2;
     }
-    return 3;
+  }
+
+  public void invalid(PrintStream out) {
+    out.print(SET_TEXT_COLOR_RED);
+    out.println("Invalid command. Type 1 and press enter for help.");
+    out.print(SET_TEXT_COLOR_WHITE);
   }
 
   public void printLoggedInMenu(PrintStream out) {
@@ -175,11 +187,27 @@ public class Menu {
   public void joinGameScreen(PrintStream out, Scanner scanner) {
     out.println("What is the gameID of the game you would like to join?");
     String gameID = scanner.next();
-    currentGameID = Integer.valueOf(gameID);
+    try {
+      currentGameID=Integer.valueOf(gameID);
+    } catch (NumberFormatException e) {
+      printError(out, new Exception("Please input the gameID of the game you would like to join"));
+    }
     out.println("Which color do you want to join as?");
     out.println("1. White");
     out.println("2. Black");
-    int playerColor = scanner.nextInt();
+    int playerColor = 0;
+    try {
+      playerColor = scanner.nextInt();
+    } catch (InputMismatchException e) {
+      printError(out, new Exception("Please select 1 for white or 2 for black"));
+      return;
+    }
+    if (playerColor != 1 && playerColor != 2) {
+      out.print(SET_TEXT_COLOR_RED);
+      out.println("Please select 1 for white or 2 for black");
+      out.print(RESET_TEXT_COLOR);
+      return;
+    }
     try {
       chessBoard = new ChessBoard(playerColor);
       serverFacade.joinGame(selectColor(playerColor), gameID, chessBoard);
@@ -193,29 +221,32 @@ public class Menu {
 
   public int inGameScreen(PrintStream out, Scanner scanner) throws Exception {
     inGameOptions(out);
-    int optionSelected = scanner.nextInt();
+    String optionSelected = scanner.next();
 
     switch (optionSelected) {
-      case 1:
+      case "1":
         help(out);
         break;
-      case 2:
+      case "2":
         serverFacade.redraw();
         break;
-      case 3:
+      case "3":
         serverFacade.leave(currentGameID);
         return 0;
-      case 4:
+      case "4":
         makeMoveScreen(out, scanner);
         break;
-      case 5:
+      case "5":
         serverFacade.resign(currentGameID);
         break;
-      case 6:
+      case "6":
         selectPiece(out, scanner);
         break;
-      case 7:
+      case "7":
         serverFacade.highlightAllMoves();
+        break;
+      default:
+        invalid(out);
         break;
     }
     inGameScreen(out, scanner);
@@ -240,7 +271,14 @@ public class Menu {
 
   public void joinAsObserverScreen(PrintStream out, Scanner scanner) {
     out.println("What is the gameID of the game you would like to join?");
-    String gameID = scanner.next();
+    String id = scanner.next();
+    int gameID = 0;
+    try {
+      gameID = Integer.parseInt(id);
+    } catch (NumberFormatException e) {
+      printError(out, new Exception("Invalid gameID"));
+      return;
+    }
     try {
       chessBoard = new ChessBoard(1);
       serverFacade.joinObserver(gameID, chessBoard);
@@ -289,7 +327,7 @@ public class Menu {
   public void help(PrintStream out) {
     out.print(SET_TEXT_ITALIC);
     out.println("Type the number of the option you would like to select and hit 'enter'");
-    out.print(RESET_TEXT_ITALIC);
+    out.print(SET_TEXT_COLOR_WHITE);
   }
 
   public void printError(PrintStream out, Exception e) {

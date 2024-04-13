@@ -134,9 +134,9 @@ public class ServerFacade {
     wsCommunicator.send(new Gson().toJson(joinRequest));
   }
 
-  public void joinObserver(String gameID, ChessBoard chessBoard) throws Exception {
+  public void joinObserver(int gameID, ChessBoard chessBoard) throws Exception {
     wsCommunicator = new WSClient(baseURL, chessBoard);
-    JoinObserverRequest joinObserverRequest = new JoinObserverRequest(authToken, Integer.parseInt(gameID));
+    JoinObserverRequest joinObserverRequest = new JoinObserverRequest(authToken, gameID);
     wsCommunicator.send(new Gson().toJson(joinObserverRequest));
   }
 
